@@ -15,6 +15,8 @@ gem "resque-web", require: "resque_web"
 
 gem "unicorn", group: :production
 
-group :development, :test do
-  gem "dotenv-rails"
+group :test do
+  gem "rspec-rails"
+  gem "mock_redis"
+  gem "simplecov", require: false
 end

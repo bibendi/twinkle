@@ -1,8 +1,9 @@
-.git/
-.bundle/
-coverage/
-log/*
-tmp/*
-public/assets/
-.env
-.env.*
+/.git/
+/.bundle/
+/coverage/
+/log/*
+/tmp/*
+/public/assets/
+/.env
+/.env.*
+/vendor/bundle/

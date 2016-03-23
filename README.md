@@ -17,7 +17,12 @@ curl -X POST --data "token=twinkle-secret-token&channel=sadness&message=Site+is+
 ```
 $ cp .env.sample .env
 $ vi .env
-$ docker-compose up
+$ docker-compose build
+$ docker-compose run --rm app bundle install
+
+$ docker-compose up -d
+$ docker-compose run --rm rails c
+$ docker-compose run --rm rspec
 ```
 
 ### Production

@@ -12,7 +12,6 @@ redis:
 app:
   build: '.'
   command: 'bundle exec rails s -b 0.0.0.0'
-  env_file: .env
   environment:
     - 'REDIS_URL=redis://redis:6379'
     - 'SECRET_TOKEN=twinkle-secret-token'
@@ -28,7 +27,6 @@ app:
 worker:
   build: '.'
   command: 'bundle exec rake resque:work --trace'
-  env_file: .env
   environment:
     - 'QUEUE=*'
     - 'REDIS_URL=redis://redis:6379'
