@@ -21,8 +21,8 @@ $ docker-compose build
 $ docker-compose run --rm app bundle install
 
 $ docker-compose up -d
-$ docker-compose run --rm rails c
-$ docker-compose run --rm rspec
+$ docker-compose run --rm bundle exec rails c
+$ docker-compose run --rm bundle exec rspec
 ```
 
 ### Production

@@ -15,3 +15,4 @@
 /.env.*
 !/.env.sample
 /vendor/bundle
+/coverage/
