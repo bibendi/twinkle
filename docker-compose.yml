@@ -1,3 +1,15 @@
+pgdata:
+  image: 'busybox'
+  volumes:
+    - /data
+  environment:
+    - POSTGRES_PASSWORD=mypass
+
+pg:
+  image: 'postgres:9.4'
+  volumes_from:
+    - pgdata
+
 redisdata:
   image: 'busybox'
   volumes:
@@ -13,6 +25,7 @@ app:
   build: '.'
   command: 'bundle exec rails s -b 0.0.0.0'
   environment:
+    - 'DATABASE_URL=postgres://postgres:mypass@pg/twinkle'
     - 'REDIS_URL=redis://redis:6379'
     - 'SECRET_TOKEN=twinkle-secret-token'
     - 'RESQUE_WEB_HTTP_BASIC_AUTH_USER=admin'
@@ -22,6 +35,7 @@ app:
   volumes:
     - '.:/app'
   links:
+    - pg
     - redis
 
 worker:
@@ -29,8 +43,10 @@ worker:
   command: 'bundle exec rake resque:work --trace'
   environment:
     - 'QUEUE=*'
+    - 'DATABASE_URL=postgres://postgres:mypass@pg/twinkle'
     - 'REDIS_URL=redis://redis:6379'
   volumes:
     - '.:/app'
   links:
+    - pg
     - redis

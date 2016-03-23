@@ -9,7 +9,9 @@ RUN apt-get update -qq && \
   libxslt-dev \
   pkg-config \
   libgmp3-dev \
-  libcurl3-dev && \
+  libcurl3-dev \
+  libpq-dev \
+  postgresql-client && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
   truncate -s 0 /var/log/*log

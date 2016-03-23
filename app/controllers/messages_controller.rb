@@ -2,13 +2,19 @@ class MessagesController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def create
-    token_validation_context = ValidateToken.call(token: params.require(:token))
+    auth_context = AuthenticateUser.call(token: params[:token])
 
-    if token_validation_context.success?
-      Resque.enqueue(SendMessageJob, params.require(:channel), params.require(:message))
-      render json: {status: "ok"}
+    if auth_context.success?
+      enqueue_context = EnqueueMessage.call(user: enqueue_context.user,
+                                            channel_name: params[:channel],
+                                            message: params[:message])
+      if enqueue_context.success?
+        head 200
+      else
+        render json: {message: enqueue_context.message}, status: 400
+      end
     else
-      render json: {errors: token_validation_context.errors}, status: 400
+      render json: {message: auth_context.message}, status: 403
     end
   end
 end

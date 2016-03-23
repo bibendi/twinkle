@@ -1,40 +1,42 @@
-class SendMessage
-  include Interactor
-  include ActiveModel::Validations
+class SendMessage < ApplicationInteractor
+  TRANSPORT_FORWARDERS = {
+    "Transports::Telegram" => Forwarders::SendTelegram
+  }.freeze
 
-  delegate :channel_or_name, to: :context
+  delegate :user_id, to: :context
+  delegate :channel_name, to: :context
   delegate :message, to: :context
 
-  validates :channel_or_name, presence: true
+  validates :user_id, presence: true, numericality: {only_integer: true}
+  validates :channel_name, presence: true
   validates :message, presence: true
-  validates :channel, presence: true
 
   def call
-    context.fail!(errors: errors) unless valid?
+    validate!
 
-    forwarder_errors = []
-    channel.transports.each do |transport|
-      forwarder_options = transport.options.merge(message: message)
-      forwarder_context = forwarder_for(transport).call(forwarder_options)
-      forwarder_errors << forwarder_context.errors unless forwarder_context.success?
-    end
+    return unless user.active?
+    return unless channel.active?
 
-    context.fail!(errors: forwarder_errors) if forwarder_errors.any?
+    send
   end
 
   private
 
-  def channel
-    return @channel if defined?(@channel)
+  def send
+    errors = []
+    channel.transports.each do |transport|
+      forwarder_context = TRANSPORT_FORWARDERS[transport.type].call(message: message, transport: transport)
+      errors << forwarder_context.message if forwarder_context.failure?
+    end
 
-    @channel = if channel_or_name.respond_to?(:transports)
-                 channel_or_name
-               else
-                 Channel.find(name: channel_or_name).first
-               end
+    context.fail!(message: errors.join("; ")) if errors.any?
   end
 
-  def forwarder_for(transport)
-    "forwarders/send_#{transport.name}".camelize.constantize
+  def user
+    @user ||= User.find(user_id)
+  end
+
+  def channel
+    @channel ||= user.channels.find_by!(name: channel_name)
   end
 end

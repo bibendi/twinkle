@@ -1,23 +1,20 @@
 require "telegram/bot"
 
 module Forwarders
-  class SendTelegram
-    include Interactor
-    include ActiveModel::Validations
-
+  class SendTelegram < ApplicationInteractor
     delegate :message, to: :context
-    delegate :chat_id, to: :context
+    delegate :transport, to: :context
 
     validates :message, presence: true
-    validates :chat_id, presence: true, numericality: {only_integer: true}
+    validates :transport, presence: true
 
     def call
-      context.fail!(errors: errors) unless valid?
+      validate!
 
       ::Telegram::Bot::Client.run(ENV.fetch("TELEGRAM_BOT_TOKEN")) do |bot|
         bot.api.send_message(
           text: message,
-          chat_id: Integer(chat_id)
+          chat_id: Integer(transport.chat_id)
         )
       end
     end

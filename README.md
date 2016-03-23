@@ -19,10 +19,9 @@ $ cp .env.sample .env
 $ vi .env
 $ docker-compose build
 $ docker-compose run --rm app bundle install
-
+$ docker-compose run --rm app bundle exec rake db:create
+$ docker-compose run --rm app bundle exec rake db:migrate
 $ docker-compose up -d
-$ docker-compose run --rm bundle exec rails c
-$ docker-compose run --rm bundle exec rspec
 ```
 
 ### Production

@@ -1,8 +1,6 @@
-class Transport < Ohm::Model
-  include Ohm::DataTypes
+class Transport < ActiveRecord::Base
+  belongs_to :user, required: true
 
-  attribute :name
-  attribute :options, Type::Hash
-
-  reference :channel, :Channel
+  has_many :channel_transports
+  has_many :channels, through: :channel_transports
 end
