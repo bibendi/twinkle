@@ -2,6 +2,9 @@ class SendMessageJob
   @queue = :messages
 
   def self.perform(user_id, channel_name, message)
-    SendMessage.call!(user_id: user_id, channel_or_name: channel_name, message: message)
+    user = User.find(Integer(user_id))
+    channel = user.channels.find_by!(name: channel_name)
+
+    SendMessage.call!(channel: channel, message: message)
   end
 end

@@ -1,34 +1,28 @@
 class SendMessage < ApplicationInteractor
-  FORWARDERS = {
-    "Transports::Telegram" => Forwarders::SendTelegram
-  }.freeze
+  params :channel, :message
 
-  params :user_id, :channel_name, :message
-
-  validates :user_id, :channel_name, :message, presence: true
+  validates :channel, :message, presence: true
 
   def perform
-    return unless user.active? || channel.active?
-    send
+    return if !channel.active? || !channel.user.active?
+
+    context.sent_count = 0
+    @transport_errors = []
+
+    channel.transports.each do |transport|
+      forward(transport)
+    end
+
+    return if @transport_errors.empty?
+    context.fail!(message: @transport_errors.map(&:message).join("; "))
   end
 
   private
 
-  def send
-    errors = []
-    channel.transports.each do |transport|
-      forwarder_context = FORWARDERS[transport.type].call(message: message, transport: transport)
-      errors << forwarder_context.message if forwarder_context.failure?
-    end
-
-    context.fail!(message: errors.join("; ")) if errors.any?
-  end
-
-  def user
-    @user ||= User.find(user_id)
-  end
-
-  def channel
-    @channel ||= user.channels.find_by!(name: channel_name)
+  def forward(transport)
+    transport.deliver(message)
+    context.sent_count += 1
+  rescue => error
+    @transport_errors << error
   end
 end
