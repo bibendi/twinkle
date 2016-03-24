@@ -10,7 +10,7 @@ RUN apt-get update -qq && \
   pkg-config \
   libcurl3-dev \
   libpq-dev \
-  libgmp3-dev \
+  libgmp3-dev && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
   truncate -s 0 /var/log/*log
