@@ -1,0 +1,81 @@
+lb:
+  image: kontena/lb:latest
+  deploy:
+    strategy: daemon
+  ports:
+    - 80:80
+  log_driver: syslog
+  log_opt:
+    tag: '{{.Name}}'
+
+pg:
+  image: 'postgres:9.4'
+  environment:
+    - POSTGRES_PASSWORD=mypass
+  stateful: true
+  log_driver: syslog
+  log_opt:
+    tag: '{{.Name}}'
+
+redis:
+  image: 'redis:3-alpine'
+  command: 'redis-server --appendonly yes'
+  stateful: true
+  log_driver: syslog
+  log_opt:
+    tag: '{{.Name}}'
+
+app:
+  image: bibendi/twinkle
+  build: '.'
+  dockerfile: config/docker/production/rails/Dockerfile
+  command: ./config/docker/production/rails/unicorn.sh
+  environment:
+    - KONTENA_LB_INTERNAL_PORT=3000
+    - DATABASE_URL=postgres://postgres:mypass@twinkle-pg/twinkle
+    - REDIS_URL=redis://twinkle-redis:6379
+  secrets:
+    - secret: TWINKLE_SECRET_KEY_BASE
+      name: SECRET_KEY_BASE
+      type: env
+    - secret: TWINKLE_RESQUE_WEB_HTTP_BASIC_AUTH_USER
+      name: RESQUE_WEB_HTTP_BASIC_AUTH_USER
+      type: env
+    - secret: TWINKLE_RESQUE_WEB_HTTP_BASIC_AUTH_PASSWORD
+      name: RESQUE_WEB_HTTP_BASIC_AUTH_PASSWORD
+      type: env
+    - secret: TWINKLE_TELEGRAM_BOT_TOKEN
+      name: TELEGRAM_BOT_TOKEN
+      type: env
+    - secret: TWINKLE_UNICORN_WORKERS
+      name: UNICORN_WORKERS
+      type: env
+  links:
+    - lb
+  log_driver: syslog
+  log_opt:
+    tag: '{{.Name}}'
+
+worker:
+  image: bibendi/twinkle
+  command: 'bundle exec rake resque:work --trace'
+  environment:
+    - 'QUEUE=*'
+    - DATABASE_URL=postgres://postgres:mypass@twinkle-pg/twinkle
+    - REDIS_URL=redis://twinkle-redis:6379
+  secrets:
+    - secret: TWINKLE_SECRET_KEY_BASE
+      name: SECRET_KEY_BASE
+      type: env
+    - secret: TWINKLE_RESQUE_WEB_HTTP_BASIC_AUTH_USER
+      name: RESQUE_WEB_HTTP_BASIC_AUTH_USER
+      type: env
+    - secret: TWINKLE_RESQUE_WEB_HTTP_BASIC_AUTH_PASSWORD
+      name: RESQUE_WEB_HTTP_BASIC_AUTH_PASSWORD
+      type: env
+    - secret: TWINKLE_TELEGRAM_BOT_TOKEN
+      name: TELEGRAM_BOT_TOKEN
+      type: env
+  log_driver: syslog
+  log_opt:
+    tag: '{{.Name}}'

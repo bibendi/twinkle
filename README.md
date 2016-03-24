@@ -6,11 +6,26 @@ Available transports: Telegram
 
 ## Usage
 
-```
-curl -X POST --data "token=twinkle-secret-token&channel=sadness&message=Site+is+Down" http://localhost:3000/messages
-```
+#### Send message
+
+`curl -X POST --data "token=twinkle-secret-token&channel=sadness&message=Site+is+Down" http://localhost:3000/messages`
+
+#### Show Resque statistics
+
+`http://localhost/resque_web`
 
 ## Installation
+
+### Transports
+
+#### Telegram bot
+
+The first step in creating our bot is to talk to the https://telegram.me/BotFather and get the token.
+
+Let’s create our bot using the command `/newbot`.
+
+Now we have to register for a username, note: it must end in bot,
+If our bot is named `TetrisBot` the username must be `tetrisbot`.
 
 ### Development
 
@@ -27,4 +42,42 @@ $ docker-compose up -d
 
 ### Production
 
-TODO
+#### Install
+
+http://kontena.io/docs/getting-started/installing/
+
+```
+$ gem install kontena-cli
+$ kontena login http://{kontena-master-endpoint}:8080
+$ kontena grid create twinkle
+```
+
+#### Build
+
+Build image and push to https://hub.docker.com/r/bibendi/twinkle
+
+```
+$ kontena app build
+```
+
+#### Deploy
+
+```
+$ kontena app deploy
+```
+
+### Add User, Channel and Transport
+
+```
+$ rails c
+user = User.create!(name: "user_name")
+channel = user.channels.create!(name: "channel_name")
+bot = user.transports.create!(chat_id: -12345678)
+channel.transports << bot
+puts user.token
+```
+
+## Roadmap
+
+* Add transports: Email, SMS
+* Web interface

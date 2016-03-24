@@ -25,11 +25,11 @@ app:
   build: '.'
   command: 'bundle exec rails s -b 0.0.0.0'
   environment:
-    - 'DATABASE_URL=postgres://postgres:mypass@pg/twinkle'
-    - 'REDIS_URL=redis://redis:6379'
-    - 'SECRET_TOKEN=twinkle-secret-token'
-    - 'RESQUE_WEB_HTTP_BASIC_AUTH_USER=admin'
-    - 'RESQUE_WEB_HTTP_BASIC_AUTH_PASSWORD=admin'
+    - DATABASE_URL=postgres://postgres:mypass@pg/twinkle
+    - REDIS_URL=redis://redis:6379
+    - SECRET_TOKEN=twinkle-secret-token
+    - RESQUE_WEB_HTTP_BASIC_AUTH_USER=admin
+    - RESQUE_WEB_HTTP_BASIC_AUTH_PASSWORD=admin
   ports:
     - '3000:3000'
   volumes:
@@ -43,8 +43,8 @@ worker:
   command: 'bundle exec rake resque:work --trace'
   environment:
     - 'QUEUE=*'
-    - 'DATABASE_URL=postgres://postgres:mypass@pg/twinkle'
-    - 'REDIS_URL=redis://redis:6379'
+    - DATABASE_URL=postgres://postgres:mypass@pg/twinkle
+    - REDIS_URL=redis://redis:6379
   volumes:
     - '.:/app'
   links:
