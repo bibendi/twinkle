@@ -64,6 +64,11 @@ GEM
     equalizer (0.0.11)
     erubis (2.7.0)
     execjs (2.6.0)
+    factory_girl (4.5.0)
+      activesupport (>= 3.0.0)
+    factory_girl_rails (4.6.0)
+      factory_girl (~> 4.5.0)
+      railties (>= 3.0.0)
     gene_pool (1.4.1)
       thread_safe
     globalid (0.3.6)
@@ -164,6 +169,11 @@ GEM
       resque
       sass-rails
       twitter-bootstrap-rails
+    resque_spec (0.17.0)
+      resque (>= 1.19.0)
+      rspec-core (>= 3.0.0)
+      rspec-expectations (>= 3.0.0)
+      rspec-mocks (>= 3.0.0)
     rspec-core (3.4.4)
       rspec-support (~> 3.4.0)
     rspec-expectations (3.4.0)
@@ -241,15 +251,17 @@ PLATFORMS
 
 DEPENDENCIES
   dotenv-rails
+  factory_girl_rails
   hiredis
   interactor
   jsonb_accessor
   mock_redis
   pg
-  rails (= 4.2.6)
+  rails
   redis
-  resque (~> 1.26)
+  resque
   resque-web
+  resque_spec
   rspec-rails
   sass-rails
   simplecov

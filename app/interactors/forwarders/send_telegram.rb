@@ -2,15 +2,11 @@ require "telegram/bot"
 
 module Forwarders
   class SendTelegram < ApplicationInteractor
-    delegate :message, to: :context
-    delegate :transport, to: :context
+    params :message, :transport
 
-    validates :message, presence: true
-    validates :transport, presence: true
+    validates :message, :transport, presence: true
 
-    def call
-      validate!
-
+    def perform
       ::Telegram::Bot::Client.run(ENV.fetch("TELEGRAM_BOT_TOKEN")) do |bot|
         bot.api.send_message(
           text: message,

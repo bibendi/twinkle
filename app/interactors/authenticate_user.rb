@@ -1,11 +1,9 @@
 class AuthenticateUser < ApplicationInteractor
-  delegate :token, to: :context
+  params :token
 
   validates :token, presence: true
 
-  def call
-    validate!
-
+  def perform
     if user = User.where(token: token).first
       context.user = user
     else

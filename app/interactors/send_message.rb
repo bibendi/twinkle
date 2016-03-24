@@ -1,22 +1,14 @@
 class SendMessage < ApplicationInteractor
-  TRANSPORT_FORWARDERS = {
+  FORWARDERS = {
     "Transports::Telegram" => Forwarders::SendTelegram
   }.freeze
 
-  delegate :user_id, to: :context
-  delegate :channel_name, to: :context
-  delegate :message, to: :context
+  params :user_id, :channel_name, :message
 
-  validates :user_id, presence: true, numericality: {only_integer: true}
-  validates :channel_name, presence: true
-  validates :message, presence: true
+  validates :user_id, :channel_name, :message, presence: true
 
-  def call
-    validate!
-
-    return unless user.active?
-    return unless channel.active?
-
+  def perform
+    return unless user.active? || channel.active?
     send
   end
 
@@ -25,7 +17,7 @@ class SendMessage < ApplicationInteractor
   def send
     errors = []
     channel.transports.each do |transport|
-      forwarder_context = TRANSPORT_FORWARDERS[transport.type].call(message: message, transport: transport)
+      forwarder_context = FORWARDERS[transport.type].call(message: message, transport: transport)
       errors << forwarder_context.message if forwarder_context.failure?
     end
 

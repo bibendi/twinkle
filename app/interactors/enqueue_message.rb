@@ -1,15 +1,9 @@
 class EnqueueMessage < ApplicationInteractor
-  delegate :user, to: :context
-  delegate :channel_name, to: :context
-  delegate :message, to: :context
+  params :user, :channel_name, :message
 
-  validates :user, presence: true
-  validates :channel_name, presence: true
-  validates :message, presence: true
+  validates :user, :channel_name, :message, presence: true
 
-  def call
-    validate!
-
+  def perform
     Resque.enqueue(SendMessageJob, user.id, channel_name, message)
   end
 end
