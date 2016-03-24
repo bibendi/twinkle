@@ -8,11 +8,11 @@ Available transports: Telegram
 
 #### Send message
 
-`curl -X POST --data "token=twinkle-secret-token&channel=sadness&message=Site+is+Down" http://localhost:3000/messages`
+`curl -X POST --data "token=user-token&channel=sadness&message=Site+is+Down" http://localhost:3000/messages`
 
 #### Show Resque statistics
 
-`http://localhost/resque_web`
+`http://localhost:3000/resque_web`
 
 ## Installation
 
