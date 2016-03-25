@@ -1,5 +1,10 @@
 # Twinkle
 
+[![Code Climate](https://codeclimate.com/github/bibendi/twinkle/badges/gpa.svg)](https://codeclimate.com/github/bibendi/twinkle)
+[![Test Coverage](https://codeclimate.com/github/bibendi/twinkle/badges/coverage.svg)](https://codeclimate.com/github/bibendi/twinkle/coverage)
+[![DockerHub Status](https://img.shields.io/docker/stars/zendesk/samson.svg)](https://hub.docker.com/r/bibendi/twinkle)
+[![Dependency Status](https://gemnasium.com/bibendi/twinkle.svg)](https://gemnasium.com/bibendi/twinkle)
+
 Notifications service.
 
 Available transports: Telegram
@@ -20,12 +25,7 @@ Available transports: Telegram
 
 #### Telegram bot
 
-The first step in creating our bot is to talk to the https://telegram.me/BotFather and get the token.
-
-Let’s create our bot using the command `/newbot`.
-
-Now we have to register for a username, note: it must end in bot,
-If our bot is named `TetrisBot` the username must be `tetrisbot`.
+The first step in creating our bot is to talk to the https://telegram.me/BotFather and get the token. Let’s create our bot using the command `/newbot`. Now we have to register for a username, note: it must end in bot, If our bot is named `TetrisBot` the username must be `tetrisbot`.
 
 ### Development
 

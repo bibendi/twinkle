@@ -22,4 +22,5 @@ group :test do
   gem "factory_girl_rails"
   gem "resque_spec"
   gem "simplecov", require: false
+  gem "codeclimate-test-reporter", require: false
 end

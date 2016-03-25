@@ -5,6 +5,9 @@ SimpleCov.start "rails" do
   minimum_coverage 95
 end
 
+require "codeclimate-test-reporter"
+CodeClimate::TestReporter.start
+
 require File.expand_path("../../config/environment", __FILE__)
 require "rspec/rails"
 
