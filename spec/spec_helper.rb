@@ -21,7 +21,6 @@ RSpec.configure do |config|
 
   config.before do
     Redis.current.flushdb
-    Rails.cache.clear
   end
 
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
