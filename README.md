@@ -2,6 +2,7 @@
 
 [![Code Climate](https://codeclimate.com/github/bibendi/twinkle/badges/gpa.svg)](https://codeclimate.com/github/bibendi/twinkle)
 [![Test Coverage](https://codeclimate.com/github/bibendi/twinkle/badges/coverage.svg)](https://codeclimate.com/github/bibendi/twinkle/coverage)
+[![Build Status](https://travis-ci.org/bibendi/twinkle.svg?branch=master)](https://travis-ci.org/bibendi/twinkle)
 [![DockerHub Status](https://img.shields.io/docker/stars/zendesk/samson.svg)](https://hub.docker.com/r/bibendi/twinkle)
 [![Dependency Status](https://gemnasium.com/bibendi/twinkle.svg)](https://gemnasium.com/bibendi/twinkle)
 
