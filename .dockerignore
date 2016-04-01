@@ -7,3 +7,4 @@ public/assets/
 .env
 .env.*
 vendor/bundle/
+spec/

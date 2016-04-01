@@ -39,4 +39,6 @@ RUN mkdir -p tmp/pids && \
   rm -rf tmp/cache && \
   ln -sf /dev/stdout /app/log/unicorn.log && \
   ln -sf /dev/stdout /app/log/production.log && \
-  ln -sf /dev/stdout /app/log/resque.log
+  ln -sf /dev/stdout /app/log/resque.log && \
+  bundle exec rake assets:precompile && \
+  rm -rf tmp/cache
