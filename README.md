@@ -66,7 +66,7 @@ $ kontena app deploy
 $ rails c
 user = User.create!(name: "user_name")
 channel = user.channels.create!(name: "channel_name")
-bot = user.transports.create!(chat_id: -12345678)
+bot = user.transports.create!(type: "Transports::Telegram", chat_id: -12345678)
 channel.transports << bot
 puts user.token
 ```
