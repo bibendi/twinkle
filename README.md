@@ -56,6 +56,7 @@ $ kontena grid create twinkle
 #### Deploy
 
 ```
+$ kontena service create --ports 80:80 lb kontena/lb:latest
 $ kontena app deploy
 ```
 

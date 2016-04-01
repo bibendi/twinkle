@@ -1,13 +1,3 @@
-lb:
-  image: kontena/lb:latest
-  deploy:
-    strategy: daemon
-  ports:
-    - 80:80
-  log_driver: syslog
-  log_opt:
-    tag: '{{.Name}}'
-
 pg:
   image: 'postgres:9.4'
   environment:
@@ -33,6 +23,9 @@ app:
     - DATABASE_URL=postgres://postgres:mypass@twinkle-pg/twinkle
     - REDIS_URL=redis://twinkle-redis:6379
   secrets:
+    - secret: TWINKLE_LB_HOSTS
+      name: KONTENA_LB_VIRTUAL_HOSTS
+      type: env
     - secret: TWINKLE_SECRET_KEY_BASE
       name: SECRET_KEY_BASE
       type: env
@@ -48,7 +41,7 @@ app:
     - secret: TWINKLE_UNICORN_WORKERS
       name: UNICORN_WORKERS
       type: env
-  links:
+  external_links:
     - lb
   log_driver: syslog
   log_opt:
