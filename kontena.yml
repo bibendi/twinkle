@@ -27,8 +27,6 @@ redis:
 
 app:
   image: bibendi/twinkle
-  build: '.'
-  dockerfile: config/docker/production/rails/Dockerfile
   command: ./config/docker/production/rails/unicorn.sh
   environment:
     - KONTENA_LB_INTERNAL_PORT=3000
