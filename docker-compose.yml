@@ -23,6 +23,7 @@ redis:
 
 app:
   build: '.'
+  dockerfile: Dockerfile.development
   command: 'bundle exec rails s -b 0.0.0.0'
   environment:
     - DATABASE_URL=postgres://postgres:mypass@pg/twinkle
@@ -39,6 +40,7 @@ app:
 
 worker:
   build: '.'
+  dockerfile: Dockerfile.development
   command: 'bundle exec rake resque:work --trace'
   environment:
     - 'QUEUE=*'
