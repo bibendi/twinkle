@@ -53,14 +53,6 @@ $ kontena login http://{kontena-master-endpoint}:8080
 $ kontena grid create twinkle
 ```
 
-#### Build
-
-Build image and push to https://hub.docker.com/r/bibendi/twinkle
-
-```
-$ kontena app build
-```
-
 #### Deploy
 
 ```
