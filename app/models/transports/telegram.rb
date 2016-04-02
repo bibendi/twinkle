@@ -3,8 +3,10 @@ require "telegram/bot"
 module Transports
   class Telegram < Transport
     jsonb_accessor :data,
+                   chat_name: :string,
                    chat_id: :integer
 
+    validates :chat_name, presence: true
     validates :chat_id, presence: true
 
     # :nocov:
