@@ -28,6 +28,10 @@ Available transports: Telegram
 
 The first step in creating our bot is to talk to the https://telegram.me/BotFather and get the token. Let’s create our bot using the command `/newbot`. Now we have to register for a username, note: it must end in bot, If our bot is named `TetrisBot` the username must be `tetrisbot`.
 
+In order to get the group chat id, do as follows:
+* Add the Telegram BOT to the group.
+* Get the list of updates for your BOT: `https://api.telegram.org/bot<YourBOTToken>/getUpdates`
+
 ### Development
 
 ```
@@ -51,19 +55,18 @@ http://kontena.io/docs/getting-started/installing/
 $ gem install kontena-cli
 $ kontena login http://{kontena-master-endpoint}:8080
 $ kontena grid create twinkle
-```
-
-#### Deploy
-
-```
 $ kontena service create --ports 80:80 lb kontena/lb:latest
-$ kontena app deploy
+$ kontena service start lb
+$ kontena vault write %{secrets from kontena.yml}
+$ kontena app deploy pg redis
+$ kontena app deploy app worker
 ```
 
 ### Add User, Channel and Transport
 
 ```
-$ rails c
+ssh to node
+$ docker exec -it twinkle-app-1 bundle exec rails c
 user = User.create!(name: "user_name")
 channel = user.channels.create!(name: "channel_name")
 bot = user.transports.create!(type: "Transports::Telegram", chat_id: -12345678)
