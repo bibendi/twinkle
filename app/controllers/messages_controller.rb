@@ -7,7 +7,8 @@ class MessagesController < ApplicationController
     if auth_context.success?
       enqueue_context = EnqueueMessage.call(user: auth_context.user,
                                             channel_name: params[:channel],
-                                            message: params[:message])
+                                            message: params[:message],
+                                            json_vars: params[params[:json_vars]])
       if enqueue_context.success?
         head 200
       else

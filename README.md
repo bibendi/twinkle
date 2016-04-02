@@ -16,6 +16,9 @@ Available transports: Telegram
 
 `curl -X POST --data "token=user-token&channel=sadness&message=Site+is+Down" http://localhost:3000/messages`
 
+Send message with JSON post-vars
+`curl -X POST --data "token=user-token&channel=sadness&message=json-%{a.b}&json_vars=alert&alert='{"a": {"b": 1}}'" http://localhost:3000/messages`
+
 #### Show Resque statistics
 
 `http://localhost:3000/resque_web`

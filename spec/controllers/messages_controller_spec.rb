@@ -20,9 +20,17 @@ describe MessagesController do
     expect(response.status).to eq 400
   end
 
-  it "returns 200 when all params is valid" do
-    post :create, token: user.token, channel: channel.name, message: "msg"
-    expect(SendMessageJob).to have_queued(user.id, channel.name, "msg")
-    expect(response.status).to eq 200
+  context "when all params is valid" do
+    it "returns 200 when has no json vars" do
+      post :create, token: user.token, channel: channel.name, message: "msg"
+      expect(SendMessageJob).to have_queued(user.id, channel.name, "msg", nil)
+      expect(response.status).to eq 200
+    end
+
+    it "returns 200 when has a json vars" do
+      post :create, token: user.token, channel: channel.name, message: "msg", json_vars: "data", data: '{"key": 1}'
+      expect(SendMessageJob).to have_queued(user.id, channel.name, "msg", '{"key": 1}')
+      expect(response.status).to eq 200
+    end
   end
 end

@@ -45,11 +45,24 @@ describe SendMessage do
     end
 
     context "when forwarder is success" do
-      it "sends a message" do
-        expect(telegram).to receive(:deliver).with("msg")
+      context "when interpolating vars" do
+        let(:context) { described_class.call(channel: channel, message: "msg %{a.b}", vars: {"a" => {"b" => 1}}) }
 
-        expect(context).to be_a_success
-        expect(context.sent_count).to eq 1
+        it "sends a message" do
+          expect(telegram).to receive(:deliver).with("msg 1")
+
+          expect(context).to be_a_success
+          expect(context.sent_count).to eq 1
+        end
+      end
+
+      context "when no vars" do
+        it "sends a message" do
+          expect(telegram).to receive(:deliver).with("msg")
+
+          expect(context).to be_a_success
+          expect(context.sent_count).to eq 1
+        end
       end
     end
   end
