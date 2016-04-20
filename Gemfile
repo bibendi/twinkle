@@ -14,7 +14,10 @@ gem "interactor"
 gem "resque"
 gem "resque-web", require: "resque_web"
 
-gem "unicorn", group: :production
+group :production do
+  gem "unicorn"
+  gem "newrelic_rpm"
+end
 
 group :test do
   gem "rspec-rails"

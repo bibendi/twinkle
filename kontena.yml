@@ -41,6 +41,12 @@ app:
     - secret: TWINKLE_UNICORN_WORKERS
       name: UNICORN_WORKERS
       type: env
+    - secret: TWINKLE_NEWRELIC_KEY
+      name: NEWRELIC_KEY
+      type: env
+    - secret: TWINKLE_NEWRELIC_APP_NAME
+      name: NEWRELIC_APP_NAME
+      type: env
   external_links:
     - lb
   log_driver: syslog
@@ -66,6 +72,12 @@ worker:
       type: env
     - secret: TWINKLE_TELEGRAM_BOT_TOKEN
       name: TELEGRAM_BOT_TOKEN
+      type: env
+    - secret: TWINKLE_NEWRELIC_KEY
+      name: NEWRELIC_KEY
+      type: env
+    - secret: TWINKLE_NEWRELIC_APP_NAME
+      name: NEWRELIC_APP_NAME
       type: env
   log_driver: syslog
   log_opt:
