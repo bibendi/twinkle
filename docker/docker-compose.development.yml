@@ -1,0 +1,71 @@
+version: '2'
+
+services:
+  app:
+    extends:
+      file: docker-compose.common.yml
+      service: ruby
+    volumes:
+      - ..:/app
+      - bundler-data:/bundle
+    depends_on:
+      - pg
+      - redis
+
+  web:
+    extends:
+      file: docker-compose.common.yml
+      service: ruby
+    command: bundle exec rails s Puma -b 0.0.0.0 -p 80
+    expose:
+      - "80"
+    labels:
+      com.dnsdock.name: "twinkle"
+      com.dnsdock.image: ""
+    volumes:
+      - ..:/app
+      - bundler-data:/bundle
+    depends_on:
+      - pg
+      - redis
+      - worker
+
+  worker:
+    extends:
+      file: docker-compose.common.yml
+      service: ruby
+    environment:
+      - 'QUEUE=*'
+    command: 'bundle exec rake resque:work --trace'
+    volumes:
+      - ..:/app
+      - bundler-data:/bundle
+    depends_on:
+      - pg
+      - redis
+
+  pg:
+    extends:
+      file: docker-compose.common.yml
+      service: postgres
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+  redis:
+    extends:
+      file: docker-compose.common.yml
+      service: redis
+    command: 'redis-server --appendonly yes --bind 0.0.0.0'
+    volumes:
+      - redis-data:/data
+
+volumes:
+  bundler-data:
+    external:
+      name: bundler_data
+
+  pg-data:
+    driver: local
+
+  redis-data:
+    driver: local

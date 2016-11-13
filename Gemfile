@@ -1,21 +1,19 @@
 source "https://rubygems.org"
 
 gem "rails"
-gem "dotenv-rails"
+gem "puma"
 gem "pg"
 gem "jsonb_accessor"
 gem "sass-rails"
 gem "uglifier"
 gem "therubyracer", platforms: :ruby
-gem "hiredis"
-gem "redis", require: ["redis", "redis/connection/hiredis"]
+gem "redis"
 gem "telegram-bot-ruby"
 gem "interactor"
 gem "resque"
 gem "resque-web", require: "resque_web"
 
 group :production do
-  gem "unicorn"
   gem "newrelic_rpm"
 end
 

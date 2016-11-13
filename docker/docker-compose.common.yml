@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  ruby:
+    image: abakpress/ruby:2.3
+    env_file:
+      - .env
+      - ../.env
+    command: bash
+
+  postgres:
+    image: postgres:9.4
+    environment:
+      - POSTGRES_DB=twinkle
+
+  redis:
+    image: redis:3-alpine

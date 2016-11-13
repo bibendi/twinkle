@@ -37,16 +37,21 @@ In order to get the group chat id, do as follows:
 
 ### Development
 
+#### Requirements
+
+* Docker >= 1.10 https://www.docker.com/
+* Docker Compose >= 1.8.0 https://github.com/docker/compose/releases
+* DIP >= 0.8.0 https://github.com/bibendi/dip
+
+#### Setup and Run
+
+```sh
+  dip dns up
+  dip provision
+  dip rails s
 ```
-$ cp .env.sample .env
-$ vi .env
-$ docker-compose build
-$ docker-compose run --rm app bundle install
-$ docker-compose run --rm app bundle exec rake db:create
-$ docker-compose run --rm app bundle exec rake db:migrate
-$ docker-compose run --rm -e RAILS_ENV=test app bundle exec rake db:migrate
-$ docker-compose up -d
-```
+
+Check http://twinkle.docker/
 
 ### Production
 
@@ -72,7 +77,7 @@ ssh to node
 $ docker exec -it twinkle-app-1 bundle exec rails c
 user = User.create!(name: "user_name")
 channel = user.channels.create!(name: "channel_name")
-bot = user.transports.create!(type: "Transports::Telegram", chat_id: -12345678)
+bot = user.transports.create!(type: "Transports::Telegram", chat_id: -12345678, chat_name: "Sadness")
 channel.transports << bot
 puts user.token
 ```
