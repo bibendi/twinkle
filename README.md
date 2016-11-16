@@ -49,26 +49,18 @@ In order to get the group chat id, do as follows:
   dip dns up
   dip provision
   dip rails s
+  dip rails c
+  dip compose down
+
+  RAILS_ENV=test dip rspec
+  RAILS_ENV=test dip compose down
 ```
 
 Check http://twinkle.docker/
 
 ### Production
 
-#### Install
-
-http://kontena.io/docs/getting-started/installing/
-
-```
-$ gem install kontena-cli
-$ kontena login http://{kontena-master-endpoint}:8080
-$ kontena grid create twinkle
-$ kontena service create --ports 80:80 lb kontena/lb:latest
-$ kontena service start lb
-$ kontena vault write %{secrets from kontena.yml}
-$ kontena app deploy pg redis
-$ kontena app deploy app worker
-```
+TODO
 
 ### Add User, Channel and Transport
 
