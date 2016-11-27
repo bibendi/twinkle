@@ -7,7 +7,7 @@ class ChannelTransport < ActiveRecord::Base
   private
 
   def check_user
-    return if channel.user_id == transport.user_id
+    return if channel.try(:client_id) == transport.try(:client_id)
     errors.add(:transport, :invalid)
   end
 end

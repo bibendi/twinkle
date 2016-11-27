@@ -30,5 +30,15 @@ module Twinkle
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+
+    config.twinkle = ActiveSupport::OrderedOptions.new
+
+    config.twinkle.github = ActiveSupport::OrderedOptions.new
+    config.twinkle.github.organization = ENV["GITHUB_ORGANIZATION"]
+    config.twinkle.github.client_id = ENV["GITHUB_CLIENT_ID"]
+    config.twinkle.github.client_secret = ENV["GITHUB_CLIENT_SECRET"]
+
+    config.twinkle.telegram = ActiveSupport::OrderedOptions.new
+    config.twinkle.telegram.bot_token = ENV["TELEGRAM_BOT_TOKEN"]
   end
 end

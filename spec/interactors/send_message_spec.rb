@@ -1,13 +1,13 @@
 require "spec_helper"
 
 describe SendMessage do
-  let(:user) { create :user }
-  let(:channel) { create :channel, user: user }
+  let(:client) { create :client }
+  let(:channel) { create :channel, client: client }
 
   let(:context) { described_class.call(channel: channel, message: "msg") }
 
-  context "when user is inactive" do
-    let(:user) { create :user, active: false }
+  context "when client is inactive" do
+    let(:client) { create :client, active: false }
 
     it "doesn't send message" do
       expect(context).to be_a_success
@@ -16,7 +16,7 @@ describe SendMessage do
   end
 
   context "when channel is inactive" do
-    let(:channel) { create :channel, user: user, active: false }
+    let(:channel) { create :channel, client: client, active: false }
 
     it "doesn't send message" do
       expect(context).to be_a_success
@@ -32,7 +32,7 @@ describe SendMessage do
   end
 
   context "when channel has a transport" do
-    let(:telegram) { create :telegram_transport, user: user, channel: channel }
+    let(:telegram) { create :telegram_transport, client: client, channel: channel }
 
     context "when sending is failure" do
       it "doesn't send message" do

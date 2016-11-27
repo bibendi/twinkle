@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe ChannelTransport do
-  it "doesn't link channel with transport of other user" do
+  it "doesn't link channel with transport of other client" do
     channel = create(:channel)
     transport = create(:telegram_transport)
 

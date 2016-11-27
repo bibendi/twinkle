@@ -4,7 +4,7 @@ class SendMessage < ApplicationInteractor
   validates :channel, :message, presence: true
 
   def perform
-    return if !channel.active? || !channel.user.active?
+    return if !channel.active? || !channel.client.active?
 
     @formatted_message = format_message
 

@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :transport do
-    association :user
+    association :client
 
     transient do
       channel nil

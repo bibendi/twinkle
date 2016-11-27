@@ -1,11 +1,13 @@
-class AuthenticateUser < ApplicationInteractor
+class AuthenticateClient < ApplicationInteractor
   params :token
 
   validates :token, presence: true
 
+  private
+
   def perform
-    if user = User.where(token: token).first
-      context.user = user
+    if client = Client.find_by(token: token)
+      context.client = client
     else
       context.fail!(message: t("errors.messages.token_not_found"))
     end

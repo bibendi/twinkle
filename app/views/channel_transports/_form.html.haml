@@ -1,0 +1,20 @@
+= form_for [@client, @channel, @channel_transport], html: { class: "form form-horizontal client" } do |f|
+  .form-group
+    = f.label :transport_id, class: 'control-label col-lg-2'
+    .col-lg-10
+      :ruby
+        transports = AvailableTransportsFinder.new(@channel).
+          group_by(&:class).
+          each do |_, ts|
+            ts.sort_by!(&:name).
+              map! { |t| [t.name, t.id] }
+          end
+
+      = f.select :transport_id, grouped_options_for_select(transports), class: 'form-control', required: true, include_blank: true
+    = f.error_span(:transport_id)
+  .form-group
+    .col-lg-offset-2.col-lg-10
+      = f.submit nil, class: 'btn btn-primary'
+      = link_to t('.cancel', :default => t("helpers.links.cancel")),
+                client_channel_url(@client, @channel),
+                :class => 'btn btn-default'

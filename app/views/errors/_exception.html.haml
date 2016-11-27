@@ -1,0 +1,5 @@
+%pre
+  Message: #{exception.try(:message)}
+
+  %br
+  = exception.backtrace.join("\n")

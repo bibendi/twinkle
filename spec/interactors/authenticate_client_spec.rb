@@ -1,12 +1,12 @@
 require "spec_helper"
 
-describe AuthenticateUser do
-  let(:user) { create :user }
+describe AuthenticateClient do
+  let(:client) { create :client }
 
   let(:context) { described_class.call(token: token) }
 
   context "when given valid credentials" do
-    let(:token) { user.token }
+    let(:token) { client.token }
 
     it "succeeds" do
       expect(context).to be_a_success

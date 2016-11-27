@@ -1,8 +1,8 @@
 require "spec_helper"
 
 describe User do
-  it "generates token after create" do
-    user = User.create!(name: "username")
-    expect(user.token).to be_present
+  it "generates a remember token after create" do
+    user = build :user
+    expect { user.save! }.to change { user.remember_token }
   end
 end
