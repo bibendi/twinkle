@@ -1,0 +1,35 @@
+- breadcrumb :channel, @client, @channel
+- model_class = Channel
+.page-header
+  %h1=t '.title', :default => model_class.model_name.human.titleize
+
+%p
+  %strong= model_class.human_attribute_name(:name) + ':'
+  %br
+  = @channel.name
+%p
+  %strong= model_class.human_attribute_name(:active) + ':'
+  %br
+  = @channel.active
+
+%p
+  %strong= model_class.human_attribute_name(:transports) + ':'
+
+  - @channel.transports.group_by(&:class).each do |type_class, transports|
+    %dl.dl-horizontal
+      %dt= type_class.model_name.human.pluralize.titleize
+      %dd
+        - transports.each do |transport|
+          %ul.list-unstyled
+            %li
+              = link_to transport.name, client_transports_telegram_path(@client, transport)
+              = link_to t('.destroy', :default => t("helpers.links.destroy")), client_channel_channel_transport_path(@client, @channel, transport), :method => "delete", :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-danger btn-xs'
+
+  = link_to t('.add', default: t('helpers.links.add')),
+            new_client_channel_channel_transport_path(@client, @channel),
+            class: 'btn btn-primary btn-sm'
+
+%br
+
+= link_to t('.edit', :default => t("helpers.links.edit")), edit_client_channel_path(@client, @channel), :class => 'btn btn-default'
+= link_to t('.destroy', :default => t("helpers.links.destroy")), client_channel_path(@client, @channel), :method => "delete", :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-danger'

@@ -14,14 +14,14 @@ Available transports: Telegram
 
 #### Send message
 
-`curl -X POST --data "token=user-token&channel=sadness&message=Site+is+Down" http://localhost:3000/messages`
+`curl -X POST --data "token=user-token&channel=sadness&message=Site+is+Down" http://twinkle.docker/messages`
 
 Send message with JSON post-vars
-`curl -X POST --data "token=user-token&channel=sadness&message=json-%{a.b}&json_vars=alert&alert='{"a": {"b": 1}}'" http://localhost:3000/messages`
+`curl -X POST --data "token=user-token&channel=sadness&message=json-%{a.b}&json_vars=alert&alert='{"a": {"b": 1}}'" http://twinkle.docker/messages`
 
 #### Show Resque statistics
 
-`http://localhost:3000/resque_web`
+http://twinkle.docker/resque_web
 
 ## Installation
 
@@ -62,19 +62,8 @@ Check http://twinkle.docker/
 
 TODO
 
-### Add User, Channel and Transport
-
-```
-ssh to node
-$ docker exec -it twinkle-app-1 bundle exec rails c
-user = User.create!(name: "user_name")
-channel = user.channels.create!(name: "channel_name")
-bot = user.transports.create!(type: "Transports::Telegram", chat_id: -12345678, chat_name: "Sadness")
-channel.transports << bot
-puts user.token
-```
+http://rancher.com/
 
 ## Roadmap
 
 * Add transports: Email, SMS
-* Web interface

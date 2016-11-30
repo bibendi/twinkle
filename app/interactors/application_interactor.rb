@@ -4,11 +4,11 @@ class ApplicationInteractor
 
   delegate :t, to: :I18n
 
-  private
-
   def self.params(*names)
     delegate *names, to: :context
   end
+
+  private
 
   def call
     validate!

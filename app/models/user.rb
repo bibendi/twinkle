@@ -1,15 +1,12 @@
 class User < ActiveRecord::Base
-  has_many :channels
-  has_many :transports
-  
-  validates :name, presence: true, uniqueness: true
-  validates :token, presence: true, uniqueness: true
+  validates :email, presence: true
+  validates :username, presence: true
 
-  before_validation :generate_token, on: :create
+  before_create :generate_remember_token
 
   private
 
-  def generate_token
-    self.token ||= SecureRandom.uuid
+  def generate_remember_token
+    self.remember_token = SecureRandom.hex(20)
   end
 end

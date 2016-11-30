@@ -76,7 +76,7 @@ ALTER SEQUENCE channel_transports_id_seq OWNED BY channel_transports.id;
 
 CREATE TABLE channels (
     id integer NOT NULL,
-    user_id integer NOT NULL,
+    client_id integer NOT NULL,
     name character varying NOT NULL,
     active boolean DEFAULT true NOT NULL,
     created_at timestamp without time zone,
@@ -104,6 +104,39 @@ ALTER SEQUENCE channels_id_seq OWNED BY channels.id;
 
 
 --
+-- Name: clients; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE clients (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    token character varying NOT NULL,
+    active boolean DEFAULT true NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: clients_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE clients_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: clients_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE clients_id_seq OWNED BY clients.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -119,7 +152,7 @@ CREATE TABLE schema_migrations (
 CREATE TABLE transports (
     id integer NOT NULL,
     type transport_type NOT NULL,
-    user_id integer NOT NULL,
+    client_id integer NOT NULL,
     data jsonb DEFAULT '{}'::jsonb NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone
@@ -151,11 +184,11 @@ ALTER SEQUENCE transports_id_seq OWNED BY transports.id;
 
 CREATE TABLE users (
     id integer NOT NULL,
-    name character varying NOT NULL,
-    token character varying NOT NULL,
-    active boolean DEFAULT true NOT NULL,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    email character varying NOT NULL,
+    username character varying NOT NULL,
+    remember_token character varying NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -196,6 +229,13 @@ ALTER TABLE ONLY channels ALTER COLUMN id SET DEFAULT nextval('channels_id_seq':
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY clients ALTER COLUMN id SET DEFAULT nextval('clients_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY transports ALTER COLUMN id SET DEFAULT nextval('transports_id_seq'::regclass);
 
 
@@ -220,6 +260,14 @@ ALTER TABLE ONLY channel_transports
 
 ALTER TABLE ONLY channels
     ADD CONSTRAINT channels_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: clients_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY clients
+    ADD CONSTRAINT clients_pkey PRIMARY KEY (id);
 
 
 --
@@ -253,31 +301,52 @@ CREATE INDEX index_channel_transports_on_transport_id ON channel_transports USIN
 
 
 --
--- Name: index_channels_on_user_id_and_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_channels_on_client_id_and_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX index_channels_on_user_id_and_name ON channels USING btree (user_id, name);
-
-
---
--- Name: index_transports_on_user_id_and_type; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_transports_on_user_id_and_type ON transports USING btree (user_id, type);
+CREATE UNIQUE INDEX index_channels_on_client_id_and_name ON channels USING btree (client_id, name);
 
 
 --
--- Name: index_users_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_clients_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX index_users_on_name ON users USING btree (name);
+CREATE UNIQUE INDEX index_clients_on_name ON clients USING btree (name);
 
 
 --
--- Name: index_users_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_clients_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX index_users_on_token ON users USING btree (token);
+CREATE UNIQUE INDEX index_clients_on_token ON clients USING btree (token);
+
+
+--
+-- Name: index_transports_on_client_id_and_type; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_transports_on_client_id_and_type ON transports USING btree (client_id, type);
+
+
+--
+-- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_users_on_email ON users USING btree (email);
+
+
+--
+-- Name: index_users_on_remember_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_users_on_remember_token ON users USING btree (remember_token);
+
+
+--
+-- Name: index_users_on_username; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_users_on_username ON users USING btree (username);
 
 
 --
@@ -300,7 +369,7 @@ ALTER TABLE ONLY channel_transports
 --
 
 ALTER TABLE ONLY transports
-    ADD CONSTRAINT fk_rails_8157cb1789 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_8157cb1789 FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE;
 
 
 --
@@ -316,7 +385,7 @@ ALTER TABLE ONLY channel_transports
 --
 
 ALTER TABLE ONLY channels
-    ADD CONSTRAINT fk_rails_e3493648f1 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_e3493648f1 FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE;
 
 
 --
@@ -332,4 +401,8 @@ INSERT INTO schema_migrations (version) VALUES ('20160323130931');
 INSERT INTO schema_migrations (version) VALUES ('20160323162711');
 
 INSERT INTO schema_migrations (version) VALUES ('20160323163104');
+
+INSERT INTO schema_migrations (version) VALUES ('20161115120628');
+
+INSERT INTO schema_migrations (version) VALUES ('20161115122352');
 

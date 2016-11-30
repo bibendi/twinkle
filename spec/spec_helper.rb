@@ -7,14 +7,16 @@ end
 
 require File.expand_path("../../config/environment", __FILE__)
 require "rspec/rails"
-
 require "mock_redis"
+require "support/auth"
+
 redis = MockRedis.new
 Redis.current = redis
 Resque.redis = redis
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
+  config.include TwinkleTesting::Auth
 
   config.before do
     Redis.current.flushdb

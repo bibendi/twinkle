@@ -1,0 +1,26 @@
+- breadcrumb :client, @client
+- model_class = Client
+.page-header
+  %h1=t '.title', :default => model_class.model_name.human.titleize
+
+%p
+  %strong= model_class.human_attribute_name(:name) + ':'
+  %br
+  = @client.name
+%p
+  %strong= model_class.human_attribute_name(:token) + ':'
+  %br
+  = @client.token
+%p
+  %strong= model_class.human_attribute_name(:active) + ':'
+  %br
+  = @client.active
+
+%p
+  %strong= link_to model_class.human_attribute_name(:channels), client_channels_path(@client)
+
+%p
+  %strong= link_to model_class.human_attribute_name(:telegrams), client_transports_telegrams_path(@client)
+
+= link_to t('.edit', :default => t("helpers.links.edit")), edit_client_path(@client), :class => 'btn btn-default'
+= link_to t('.destroy', :default => t("helpers.links.destroy")), client_path(@client), :method => "delete", :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-danger'

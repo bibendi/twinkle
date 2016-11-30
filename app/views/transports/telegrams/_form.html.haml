@@ -1,0 +1,15 @@
+= form_for [@telegram.client, @telegram], as: :telegram, html: { class: "form form-horizontal channel" } do |f|
+  .form-group
+    = f.label :chat_name, class: 'control-label col-lg-2'
+    .col-lg-10
+      = f.text_field :chat_name, class: 'form-control', required: true
+    = f.error_span(:chat_name)
+  .form-group
+    = f.label :chat_id, class: 'control-label col-lg-2'
+    .col-lg-10
+      = f.text_field :chat_id, class: 'form-control', required: true
+    = f.error_span(:chat_id)
+  .form-group
+    .col-lg-offset-2.col-lg-10
+      = f.submit nil,class: 'btn btn-primary'
+      = link_to t('.cancel', :default => t("helpers.links.cancel")), client_transports_telegrams_path(@telegram.client), :class => 'btn btn-default'
