@@ -1,4 +1,7 @@
+# frozen_string_literal: true
 class ApplicationController < ActionController::Base
+  EDIT_ACTIONS = %w(new edit create update destroy).freeze
+
   protect_from_forgery with: :exception
 
   unless Rails.env.development?
@@ -8,6 +11,7 @@ class ApplicationController < ActionController::Base
   end
 
   before_action :authenticate
+  before_action :authorize, if: :signed_in?
 
   helper_method :current_user,
                 :signed_in?
@@ -16,6 +20,11 @@ class ApplicationController < ActionController::Base
 
   def authenticate
     unauthorized unless signed_in?
+  end
+
+  def authorize
+    return if current_user.admin?
+    forbidden if EDIT_ACTIONS.include?(action_name)
   end
 
   def signed_in?

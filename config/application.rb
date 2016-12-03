@@ -35,6 +35,7 @@ module Twinkle
 
     config.twinkle.github = ActiveSupport::OrderedOptions.new
     config.twinkle.github.organization = ENV["GITHUB_ORGANIZATION"]
+    config.twinkle.github.admin_team = ENV["GITHUB_ADMIN_TEAM"]
     config.twinkle.github.client_id = ENV["GITHUB_CLIENT_ID"]
     config.twinkle.github.client_secret = ENV["GITHUB_CLIENT_SECRET"]
 

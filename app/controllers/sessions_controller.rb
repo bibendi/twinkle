@@ -1,11 +1,14 @@
+# frozen_string_literal: true
 class SessionsController < ApplicationController
   skip_before_action :authenticate, only: [:create]
+  skip_before_action :authorize, only: [:destroy]
 
   def create
     authorize_context = GithubAuthorize.call(username: github_username, token: github_token)
 
     if authorize_context.success?
       user = find_user || create_user
+      update_user_role(user, authorize_context.role)
       create_session_for(user)
       flash[:notice] = "You have been logged in."
     else
@@ -32,6 +35,13 @@ class SessionsController < ApplicationController
       email: github_email_address,
       username: github_username
     )
+  end
+
+  def update_user_role(user, role)
+    return if user.role == role
+
+    user.role_id = role.id
+    user.save!
   end
 
   def create_session_for(user)

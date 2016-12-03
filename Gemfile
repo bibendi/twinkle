@@ -18,6 +18,7 @@ gem "uglifier"
 gem "therubyracer", platforms: :ruby
 gem "redis"
 gem "findit"
+gem "active_hash"
 gem "telegram-bot-ruby"
 gem "interactor"
 gem "gretel"

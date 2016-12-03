@@ -23,7 +23,7 @@ describe SessionsController do
 
     context "when authorization successfull" do
       before do
-        context = double(:context, success?: true)
+        context = double(:context, success?: true, role: Role::ADMIN)
         expect(GithubAuthorize).to receive(:call).and_return(context)
 
         build_auth_env
@@ -32,13 +32,13 @@ describe SessionsController do
       context "when user doesn't exists" do
         it "creates user and session" do
           response = post :create
+          expect(response).to redirect_to(root_path)
 
           user = User.first
           expect(user.email).to eq "tom@ex.com"
           expect(user.username).to eq "tom"
 
           expect(controller.session[:remember_token]).to be_present
-          expect(response).to redirect_to(root_path)
         end
       end
 
@@ -46,11 +46,9 @@ describe SessionsController do
         it "find user and create session" do
           user = create :user, username: "tom", email: "tom@ex.com"
           response = post :create
-
-          expect(User.count).to eq 1
-
-          expect(controller.session[:remember_token]).to be_present
           expect(response).to redirect_to(root_path)
+          expect(User.count).to eq 1
+          expect(controller.session[:remember_token]).to be_present
         end
       end
     end
@@ -61,8 +59,8 @@ describe SessionsController do
       user = create :user
       controller.session[:remember_token] = user.remember_token
       response = delete :destroy
-      expect(controller.session[:remember_token]).to be_nil
       expect(response).to redirect_to(root_path)
+      expect(controller.session[:remember_token]).to be_nil
     end
   end
 end

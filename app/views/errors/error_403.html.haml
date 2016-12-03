@@ -1,7 +1,21 @@
-.row
+.rows
   .col-md-12
-    .login-container.login-v2
-      .login-box
-        .login-body
-          .login-title
-            %strong Forbidden
+    .error-container
+      .error-code 403
+      .error-text Forbidden
+      .error-subtext
+        %p You don’t have permission to access on this server.
+      .error-actions
+        .row
+          .col-md-6
+            %a.btn.btn-info.btn-block.btn-lg{href: root_url} Home
+          .col-md-6
+            %button.btn.btn-primary.btn-block.btn-lg{onclick: 'history.back();'} Previous page
+
+    .col-md-4.col-md-offset-3
+      = image_tag "403.png"
+
+  - if @exception && (Rails.env.staging? || !Rails.env.production?)
+    .col-md-12
+      .panel.panel-danger.error-exception
+        .panel-body= render 'errors/exception', exception: @exception
