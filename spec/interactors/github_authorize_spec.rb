@@ -5,6 +5,7 @@ describe GithubAuthorize do
 
   context "when organization is nil" do
     it "authorizes with any organization" do
+      expect(context.role).to eq Role::ADMIN
       expect(context).to be_a_success
     end
   end
@@ -30,6 +31,8 @@ describe GithubAuthorize do
           expect(github_api).to receive(:organization_teams).with("paradise").and_return([admin_team])
           expect(github_api).to receive(:team_member?).with(admin_team.id, "tom").and_return(true)
           allow(Octokit::Client).to receive(:new).with(access_token: "qwerty").and_return(github_api)
+
+          expect(context.role).to eq Role::ADMIN
           expect(context).to be_a_success
         end
       end
@@ -38,6 +41,8 @@ describe GithubAuthorize do
         expect(github_api).to receive(:organization_member?).with("paradise", "tom").and_return(true)
         expect(github_api).to receive(:organization_teams).with("paradise").and_return([])
         allow(Octokit::Client).to receive(:new).with(access_token: "qwerty").and_return(github_api)
+
+        expect(context.role).to eq Role::VIEWER
         expect(context).to be_a_success
       end
     end

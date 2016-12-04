@@ -7,9 +7,9 @@ class GithubAuthorize < ApplicationInteractor
   private
 
   def perform
-    return unless config.organization
-
-    if organization_member?
+    if !config.organization
+      context.role = ::Role::ADMIN
+    elsif organization_member?
       teams = github.organization_teams(config.organization)
       raise ArgumentError, "Admin team required" unless config.admin_team.present?
       admin_team = find_team(teams, config.admin_team)
