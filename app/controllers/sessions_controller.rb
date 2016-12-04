@@ -38,7 +38,7 @@ class SessionsController < ApplicationController
   end
 
   def update_user_role(user, role)
-    return if user.role == role
+    return if user.role_id == role.id
 
     user.role_id = role.id
     user.save!
