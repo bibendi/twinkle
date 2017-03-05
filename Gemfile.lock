@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/MustafaZain/less-rails
-  revision: 31d48a0716b89966b787148eb9da54c495f10825
+  revision: 946213803a5b274260dad17526eb201230e4a761
   specs:
     less-rails (2.8.1)
       actionpack (>= 4.0)
