@@ -25,6 +25,7 @@ gem "gretel"
 
 gem "resque"
 gem "resque-web", require: "resque_web"
+gem "resque-retry"
 
 group :production do
   gem "newrelic_rpm"
