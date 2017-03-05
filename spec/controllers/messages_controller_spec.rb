@@ -21,9 +21,12 @@ describe MessagesController do
   end
 
   context "when all params is valid" do
+    before { ResqueSpec.reset! }
+
     it "returns 200 when has no json vars" do
-      post :create, token: client.token, channel: channel.name, message: "msg"
-      expect(SendMessageJob).to have_queued(client.id, channel.name, "msg", nil)
+      post_params = {token: client.token, channel: channel.name, message: "msg %{channel}"}
+      post :create, post_params
+      expect(SendMessageJob).to have_queued(client.id, channel.name, "msg %{channel}", post_params.to_json)
       expect(response.status).to eq 200
     end
 

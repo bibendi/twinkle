@@ -1,4 +1,6 @@
 class SendMessageJob
+  extend Resque::Plugins::ExponentialBackoff
+
   @queue = :messages
 
   def self.perform(client_id, channel_name, message, json_vars)

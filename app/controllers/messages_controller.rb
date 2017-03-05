@@ -6,10 +6,16 @@ class MessagesController < ApplicationController
     find_client
     return forbidden unless @client
 
+    json_vars = if (vars_key = params[:json_vars].presence)
+                  params[vars_key]
+                else
+                  params.except(:controller, :action).to_json
+                end
+
     enqueue_context = EnqueueMessage.call(client: @client,
                                           channel_name: params.require(:channel),
                                           message: params.require(:message),
-                                          json_vars: params[params[:json_vars]])
+                                          json_vars: json_vars)
     if enqueue_context.success?
       head 200
     else
