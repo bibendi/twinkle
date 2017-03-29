@@ -2,7 +2,7 @@ version: '2'
 
 services:
   ruby:
-    image: abakpress/ruby:2.3
+    image: abakpress/ruby-app:2.3-latest
     env_file:
       - .env
       - ../.env.${RAILS_ENV}
