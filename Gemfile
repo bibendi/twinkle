@@ -23,7 +23,7 @@ gem "telegram-bot-ruby"
 gem "interactor"
 gem "gretel"
 
-gem "resque"
+gem "resque", "= 1.26.0" # https://github.com/resque/resque/issues/1552
 gem "resque-web", require: "resque_web"
 gem "resque-retry"
 

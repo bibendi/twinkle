@@ -1,4 +1,4 @@
-FROM abakpress/ruby:2.3
+FROM abakpress/ruby-app:2.3-latest
 
 ENV RAILS_ENV production
 
@@ -21,7 +21,6 @@ COPY . /app/
 RUN mkdir -p tmp/pids \
   && rm -rf tmp/cache \
   && ln -sf /dev/stdout /app/log/production.log \
-  && ln -sf /dev/stdout /app/log/resque.log \
   && ln -sf /dev/stdout /app/log/newrelic_agent.log \
   && ASSETS_PRECOMPILE=true bundle exec rake assets:precompile \
   && rm -rf tmp/cache
