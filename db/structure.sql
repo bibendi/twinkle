@@ -2,12 +2,17 @@
 -- PostgreSQL database dump
 --
 
+-- Dumped from database version 9.4.11
+-- Dumped by pg_dump version 9.6.2
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
+SET row_security = off;
 
 --
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
@@ -39,7 +44,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: channel_transports; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: channel_transports; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE channel_transports (
@@ -71,7 +76,7 @@ ALTER SEQUENCE channel_transports_id_seq OWNED BY channel_transports.id;
 
 
 --
--- Name: channels; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: channels; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE channels (
@@ -104,7 +109,7 @@ ALTER SEQUENCE channels_id_seq OWNED BY channels.id;
 
 
 --
--- Name: clients; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: clients; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE clients (
@@ -137,7 +142,7 @@ ALTER SEQUENCE clients_id_seq OWNED BY clients.id;
 
 
 --
--- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE schema_migrations (
@@ -146,7 +151,7 @@ CREATE TABLE schema_migrations (
 
 
 --
--- Name: transports; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: transports; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE transports (
@@ -179,14 +184,13 @@ ALTER SEQUENCE transports_id_seq OWNED BY transports.id;
 
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE users (
     id integer NOT NULL,
     email character varying NOT NULL,
     username character varying NOT NULL,
-    remember_token character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     role_id integer DEFAULT 0 NOT NULL
@@ -213,42 +217,42 @@ ALTER SEQUENCE users_id_seq OWNED BY users.id;
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: channel_transports id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY channel_transports ALTER COLUMN id SET DEFAULT nextval('channel_transports_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: channels id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY channels ALTER COLUMN id SET DEFAULT nextval('channels_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: clients id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY clients ALTER COLUMN id SET DEFAULT nextval('clients_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: transports id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY transports ALTER COLUMN id SET DEFAULT nextval('transports_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
 
 
 --
--- Name: channel_transports_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: channel_transports channel_transports_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY channel_transports
@@ -256,7 +260,7 @@ ALTER TABLE ONLY channel_transports
 
 
 --
--- Name: channels_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: channels channels_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY channels
@@ -264,7 +268,7 @@ ALTER TABLE ONLY channels
 
 
 --
--- Name: clients_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: clients clients_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY clients
@@ -272,7 +276,7 @@ ALTER TABLE ONLY clients
 
 
 --
--- Name: transports_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: transports transports_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY transports
@@ -280,7 +284,7 @@ ALTER TABLE ONLY transports
 
 
 --
--- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY users
@@ -288,77 +292,70 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: index_channel_transports_on_channel_id_and_transport_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_channel_transports_on_channel_id_and_transport_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_channel_transports_on_channel_id_and_transport_id ON channel_transports USING btree (channel_id, transport_id);
 
 
 --
--- Name: index_channel_transports_on_transport_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_channel_transports_on_transport_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_channel_transports_on_transport_id ON channel_transports USING btree (transport_id);
 
 
 --
--- Name: index_channels_on_client_id_and_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_channels_on_client_id_and_name; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_channels_on_client_id_and_name ON channels USING btree (client_id, name);
 
 
 --
--- Name: index_clients_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_clients_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_clients_on_name ON clients USING btree (name);
 
 
 --
--- Name: index_clients_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_clients_on_token; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_clients_on_token ON clients USING btree (token);
 
 
 --
--- Name: index_transports_on_client_id_and_type; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_transports_on_client_id_and_type; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_transports_on_client_id_and_type ON transports USING btree (client_id, type);
 
 
 --
--- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_users_on_email ON users USING btree (email);
 
 
 --
--- Name: index_users_on_remember_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_users_on_remember_token ON users USING btree (remember_token);
-
-
---
--- Name: index_users_on_username; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_users_on_username; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_users_on_username ON users USING btree (username);
 
 
 --
--- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (version);
 
 
 --
--- Name: fk_rails_5e6b964f7c; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: channel_transports fk_rails_5e6b964f7c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY channel_transports
@@ -366,7 +363,7 @@ ALTER TABLE ONLY channel_transports
 
 
 --
--- Name: fk_rails_8157cb1789; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: transports fk_rails_8157cb1789; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY transports
@@ -374,7 +371,7 @@ ALTER TABLE ONLY transports
 
 
 --
--- Name: fk_rails_91a8ed416e; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: channel_transports fk_rails_91a8ed416e; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY channel_transports
@@ -382,7 +379,7 @@ ALTER TABLE ONLY channel_transports
 
 
 --
--- Name: fk_rails_e3493648f1; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: channels fk_rails_e3493648f1; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY channels
@@ -408,4 +405,6 @@ INSERT INTO schema_migrations (version) VALUES ('20161115120628');
 INSERT INTO schema_migrations (version) VALUES ('20161115122352');
 
 INSERT INTO schema_migrations (version) VALUES ('20161127182423');
+
+INSERT INTO schema_migrations (version) VALUES ('20170416181652');
 

@@ -1,9 +1,10 @@
 class MessagesController < ApplicationController
   skip_before_action :verify_authenticity_token,
-                     :authenticate
+                     :authenticate_user
 
   def create
-    find_client
+    skip_authorization
+    @client = find_client
     return forbidden unless @client
 
     json_vars = if (vars_key = params[:json_vars].presence)
@@ -27,6 +28,6 @@ class MessagesController < ApplicationController
 
   def find_client
     auth_context = AuthenticateClient.call(token: params.require(:token))
-    @client = auth_context.client if auth_context.success?
+    auth_context.client if auth_context.success?
   end
 end

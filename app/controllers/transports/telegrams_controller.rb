@@ -2,32 +2,33 @@ module Transports
   class TelegramsController < ApplicationController
     def index
       find_client
+      authorize @client, :show_transports?
 
       @telegrams = @client.transports.telegrams.order("id asc").all
     end
 
     def show
       find_client
-
       @telegram = @client.transports.telegrams.find(params.require(:id))
+      authorize @telegram
     end
 
     def new
       find_client
-
       @telegram = @client.transports.build(type: "Transports::Telegram")
+      authorize @telegram
     end
 
     def edit
       find_client
-
       @telegram = @client.transports.telegrams.find(params.require(:id))
+      authorize @telegram
     end
 
     def create
       find_client
-
       @telegram = @client.transports.build(chat_params.merge(type: "Transports::Telegram"))
+      authorize @telegram
 
       if @telegram.save
         redirect_to client_transports_telegrams_path(@client), notice: 'Telegram chat was successfully created.'
@@ -38,8 +39,8 @@ module Transports
 
     def update
       find_client
-
       @telegram = @client.transports.telegrams.find(params.require(:id))
+      authorize @telegram
 
       if @telegram.update(chat_params)
         redirect_to client_transports_telegrams_path(@client), notice: 'Telegram chat was successfully updated.'
@@ -50,9 +51,10 @@ module Transports
 
     def destroy
       find_client
+      @telegram = @client.transports.telegrams.find(params.require(:id))
+      authorize @telegram
 
-      @client.transports.telegrams.find(params.require(:id)).destroy
-
+      @telegram.destroy
       redirect_to client_transports_telegrams_path(@client), notice: 'Telegram chat was successfully destroyed.'
     end
 

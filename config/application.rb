@@ -31,6 +31,8 @@ module Twinkle
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
+    config.api_only = false
+
     config.twinkle = ActiveSupport::OrderedOptions.new
 
     config.twinkle.github = ActiveSupport::OrderedOptions.new

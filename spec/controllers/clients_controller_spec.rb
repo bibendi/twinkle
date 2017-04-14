@@ -1,12 +1,11 @@
 require "spec_helper"
 
 describe ClientsController do
-  let(:user) { create :user }
+  let(:user) { create :user, :admin }
   let(:client) { create :client }
 
   before do
     authenticate user
-    authorize :admin
   end
 
   describe "#index" do

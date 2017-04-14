@@ -1,3 +1,7 @@
+crumb :profile do |user|
+  link user.username, profile_url
+end
+
 crumb :clients do
   link 'Clients', clients_url
 end

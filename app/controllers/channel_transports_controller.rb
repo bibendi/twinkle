@@ -1,14 +1,14 @@
 class ChannelTransportsController < ApplicationController
   def new
     find_channel
-
     @channel_transport = @channel.channel_transports.build
+    authorize @channel_transport
   end
 
   def create
     find_channel
-
     @channel_transport = @channel.channel_transports.build(channel_transport_params)
+    authorize @channel_transport
 
     if @channel_transport.save
       redirect_to client_channel_path(@client, @channel), notice: 'Transport was successfully add to channel.'
@@ -19,8 +19,10 @@ class ChannelTransportsController < ApplicationController
 
   def destroy
     find_channel
+    @channel_transport = @channel.channel_transports.find_by!(transport_id: params.require(:id))
+    authorize @channel_transport
 
-    @channel.channel_transports.find_by!(transport_id: params.require(:id)).destroy
+    @channel_transport.destroy
     redirect_to client_channel_path(@client, @channel), notice: 'Transport was successfully removed from channel.'
   end
 

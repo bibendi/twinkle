@@ -7,6 +7,7 @@ end
 
 require File.expand_path("../../config/environment", __FILE__)
 require "rspec/rails"
+require "pundit/rspec"
 require "mock_redis"
 require "support/auth"
 

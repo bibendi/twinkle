@@ -3,3 +3,7 @@ en:
     messages:
       token_not_found: Token not found
       not_organization_member: User is not a member of the organization
+
+  helpers:
+    links:
+      new_api_token: Create API token

@@ -16,7 +16,7 @@ describe SessionsController do
 
         response = post :create
 
-        expect(controller.session[:remember_token]).to be_nil
+        expect(controller.session[:token]).to be_nil
         expect(response).to redirect_to(root_path)
       end
     end
@@ -38,7 +38,7 @@ describe SessionsController do
           expect(user.email).to eq "tom@ex.com"
           expect(user.username).to eq "tom"
 
-          expect(controller.session[:remember_token]).to be_present
+          expect(controller.session[:token]).to be_present
         end
       end
 
@@ -48,7 +48,7 @@ describe SessionsController do
           response = post :create
           expect(response).to redirect_to(root_path)
           expect(User.count).to eq 1
-          expect(controller.session[:remember_token]).to be_present
+          expect(controller.session[:token]).to be_present
         end
       end
     end
@@ -56,11 +56,10 @@ describe SessionsController do
 
   context "when sign out" do
     it "destroy a session" do
-      user = create :user
-      controller.session[:remember_token] = user.remember_token
+      authenticate(create :user)
       response = delete :destroy
       expect(response).to redirect_to(root_path)
-      expect(controller.session[:remember_token]).to be_nil
+      expect(controller.session[:token]).to be_nil
     end
   end
 end

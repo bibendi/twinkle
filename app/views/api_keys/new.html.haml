@@ -1,0 +1,15 @@
+- breadcrumb :profile, current_user
+- model_class = User
+.page-header
+  %h1 Account API Keys
+
+%p
+  %strong Expire at:
+  %br
+  = @expire_at
+%p
+  %strong Api token:
+  %br
+  = @token
+
+= link_to t('.back', :default => t("helpers.links.back")), profile_path, :class => 'btn btn-default'
