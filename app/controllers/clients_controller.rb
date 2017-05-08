@@ -1,7 +1,7 @@
 class ClientsController < ApplicationController
   def index
-    @clients = Client.order("name asc")
     authorize current_user, :show_clients?
+    @clients = UserClientsFinder.new(current_user)
   end
 
   def show
@@ -10,13 +10,13 @@ class ClientsController < ApplicationController
   end
 
   def new
+    authorize current_user, :create_client?
     @client = Client.new
-    authorize @client
   end
 
   def create
+    authorize current_user, :create_client?
     @client = Client.new(client_params)
-    authorize @client
 
     if @client.save
       redirect_to clients_path, notice: "Client was successfully created."
@@ -46,7 +46,7 @@ class ClientsController < ApplicationController
   def destroy
     @client = Client.find(params.require(:id))
     authorize @client
-    
+
     @client.destroy
     redirect_to clients_path, notice: "Client was successfully destroyed."
   end

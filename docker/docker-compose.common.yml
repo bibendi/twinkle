@@ -9,7 +9,7 @@ services:
     command: bash
 
   postgres:
-    image: postgres:9.4
+    image: abakpress/postgres-db:9.4-latest
     environment:
       - POSTGRES_DB=twinkle
 

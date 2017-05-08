@@ -4,8 +4,7 @@ class MessagesController < ApplicationController
 
   def create
     skip_authorization
-    @client = find_client
-    return forbidden unless @client
+    return forbidden unless client
 
     json_vars = if (vars_key = params[:json_vars].presence)
                   params[vars_key]
@@ -13,7 +12,7 @@ class MessagesController < ApplicationController
                   params.except(:controller, :action).to_json
                 end
 
-    enqueue_context = EnqueueMessage.call(client: @client,
+    enqueue_context = EnqueueMessage.call(client: client,
                                           channel_name: params.require(:channel),
                                           message: params.require(:message),
                                           json_vars: json_vars)
@@ -26,8 +25,9 @@ class MessagesController < ApplicationController
 
   private
 
-  def find_client
+  def client
+    return @client if defined?(@client)
     auth_context = AuthenticateClient.call(token: params.require(:token))
-    auth_context.client if auth_context.success?
+    @client = auth_context.client if auth_context.success?
   end
 end

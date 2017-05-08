@@ -109,6 +109,72 @@ ALTER SEQUENCE channels_id_seq OWNED BY channels.id;
 
 
 --
+-- Name: client_teams; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE client_teams (
+    id integer NOT NULL,
+    client_id integer NOT NULL,
+    team_id integer NOT NULL,
+    role_id integer NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: client_teams_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE client_teams_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: client_teams_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE client_teams_id_seq OWNED BY client_teams.id;
+
+
+--
+-- Name: client_users; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE client_users (
+    id integer NOT NULL,
+    client_id integer NOT NULL,
+    user_id integer NOT NULL,
+    role_id integer NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: client_users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE client_users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: client_users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE client_users_id_seq OWNED BY client_users.id;
+
+
+--
 -- Name: clients; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -142,12 +208,75 @@ ALTER SEQUENCE clients_id_seq OWNED BY clients.id;
 
 
 --
+-- Name: orgs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE orgs (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: orgs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE orgs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: orgs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE orgs_id_seq OWNED BY orgs.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE schema_migrations (
     version character varying NOT NULL
 );
+
+
+--
+-- Name: teams; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE teams (
+    id integer NOT NULL,
+    org_id integer NOT NULL,
+    name character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: teams_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE teams_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: teams_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE teams_id_seq OWNED BY teams.id;
 
 
 --
@@ -193,7 +322,8 @@ CREATE TABLE users (
     username character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    role_id integer DEFAULT 0 NOT NULL
+    role_id integer NOT NULL,
+    github_token character varying NOT NULL
 );
 
 
@@ -231,10 +361,38 @@ ALTER TABLE ONLY channels ALTER COLUMN id SET DEFAULT nextval('channels_id_seq':
 
 
 --
+-- Name: client_teams id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY client_teams ALTER COLUMN id SET DEFAULT nextval('client_teams_id_seq'::regclass);
+
+
+--
+-- Name: client_users id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY client_users ALTER COLUMN id SET DEFAULT nextval('client_users_id_seq'::regclass);
+
+
+--
 -- Name: clients id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY clients ALTER COLUMN id SET DEFAULT nextval('clients_id_seq'::regclass);
+
+
+--
+-- Name: orgs id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY orgs ALTER COLUMN id SET DEFAULT nextval('orgs_id_seq'::regclass);
+
+
+--
+-- Name: teams id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY teams ALTER COLUMN id SET DEFAULT nextval('teams_id_seq'::regclass);
 
 
 --
@@ -268,11 +426,43 @@ ALTER TABLE ONLY channels
 
 
 --
+-- Name: client_teams client_teams_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY client_teams
+    ADD CONSTRAINT client_teams_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: client_users client_users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY client_users
+    ADD CONSTRAINT client_users_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: clients clients_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY clients
     ADD CONSTRAINT clients_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: orgs orgs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY orgs
+    ADD CONSTRAINT orgs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: teams teams_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY teams
+    ADD CONSTRAINT teams_pkey PRIMARY KEY (id);
 
 
 --
@@ -313,10 +503,31 @@ CREATE UNIQUE INDEX index_channels_on_client_id_and_name ON channels USING btree
 
 
 --
--- Name: index_clients_on_name; Type: INDEX; Schema: public; Owner: -
+-- Name: index_client_teams_on_client_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_clients_on_name ON clients USING btree (name);
+CREATE INDEX index_client_teams_on_client_id ON client_teams USING btree (client_id);
+
+
+--
+-- Name: index_client_teams_on_team_id_and_client_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_client_teams_on_team_id_and_client_id ON client_teams USING btree (team_id, client_id);
+
+
+--
+-- Name: index_client_users_on_client_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_client_users_on_client_id ON client_users USING btree (client_id);
+
+
+--
+-- Name: index_client_users_on_user_id_and_client_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_client_users_on_user_id_and_client_id ON client_users USING btree (user_id, client_id);
 
 
 --
@@ -324,6 +535,20 @@ CREATE UNIQUE INDEX index_clients_on_name ON clients USING btree (name);
 --
 
 CREATE UNIQUE INDEX index_clients_on_token ON clients USING btree (token);
+
+
+--
+-- Name: index_orgs_on_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_orgs_on_name ON orgs USING btree (name);
+
+
+--
+-- Name: index_teams_on_org_id_and_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_teams_on_org_id_and_name ON teams USING btree (org_id, name);
 
 
 --
@@ -355,6 +580,22 @@ CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (v
 
 
 --
+-- Name: client_teams fk_rails_0cb8c07097; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY client_teams
+    ADD CONSTRAINT fk_rails_0cb8c07097 FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE;
+
+
+--
+-- Name: client_teams fk_rails_16800be0e2; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY client_teams
+    ADD CONSTRAINT fk_rails_16800be0e2 FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE;
+
+
+--
 -- Name: channel_transports fk_rails_5e6b964f7c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -371,11 +612,35 @@ ALTER TABLE ONLY transports
 
 
 --
+-- Name: client_users fk_rails_91818ac2d3; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY client_users
+    ADD CONSTRAINT fk_rails_91818ac2d3 FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE;
+
+
+--
 -- Name: channel_transports fk_rails_91a8ed416e; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY channel_transports
     ADD CONSTRAINT fk_rails_91a8ed416e FOREIGN KEY (channel_id) REFERENCES channels(id) ON DELETE CASCADE;
+
+
+--
+-- Name: client_users fk_rails_d0a2432aad; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY client_users
+    ADD CONSTRAINT fk_rails_d0a2432aad FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: teams fk_rails_d539eaab01; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY teams
+    ADD CONSTRAINT fk_rails_d539eaab01 FOREIGN KEY (org_id) REFERENCES orgs(id) ON DELETE CASCADE;
 
 
 --
@@ -407,4 +672,12 @@ INSERT INTO schema_migrations (version) VALUES ('20161115122352');
 INSERT INTO schema_migrations (version) VALUES ('20161127182423');
 
 INSERT INTO schema_migrations (version) VALUES ('20170416181652');
+
+INSERT INTO schema_migrations (version) VALUES ('20170501100619');
+
+INSERT INTO schema_migrations (version) VALUES ('20170501101937');
+
+INSERT INTO schema_migrations (version) VALUES ('20170508102952');
+
+INSERT INTO schema_migrations (version) VALUES ('20170508171334');
 

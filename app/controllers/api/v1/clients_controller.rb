@@ -4,8 +4,8 @@ module Api
       before_action { authorize current_owner, :manage? }
 
       def index
-        @clients = ::Client.order("name asc")
-        authorize ::User, :show_clients?
+        authorize current_user, :show_clients?
+        @clients = UserClientsFinder.new(current_user)
       end
 
       def show
@@ -14,8 +14,8 @@ module Api
       end
 
       def create
+        authorize current_user, :create_client?
         @client = ::Client.new(client_params)
-        authorize @client
         render(status: 422) unless @client.save
       end
 

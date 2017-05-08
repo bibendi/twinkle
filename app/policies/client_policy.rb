@@ -1,24 +1,21 @@
 class ClientPolicy < ApplicationPolicy
-  def index?
-    user.present?
+  def show?
+    return false unless user
+    return false unless object.try(:persisted?)
+    UserClientsFinder.new(user, role: ClientRole::VIEWER).to_a.include?(object)
   end
 
-  alias show? index?
+  alias show_channels? show?
+  alias show_transports? show?
 
-  def new?
-    user.try(:admin?)
+  def edit?
+    return false unless user
+    return false unless object.try(:persisted?)
+    UserClientsFinder.new(user, role: ClientRole::MEMBER).to_a.include?(object)
   end
 
-  alias create? new?
-  alias edit? new?
-  alias update? new?
-  alias destroy? new?
-
-  def show_channels?
-    user.present?
-  end
-
-  def show_transports?
-    user.present?
-  end
+  alias update? edit?
+  alias destroy? edit?
+  alias create_channel? edit?
+  alias create_transport? edit?
 end

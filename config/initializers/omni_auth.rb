@@ -3,6 +3,6 @@ Rails.application.config.middleware.use OmniAuth::Builder do
     :github,
     Rails.application.config.twinkle.github.client_id,
     Rails.application.config.twinkle.github.client_secret,
-    scope: 'user:email,repo'
+    scope: 'user:email,read:org'
   )
 end

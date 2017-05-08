@@ -1,10 +1,10 @@
 # frozen_string_literal: true
-class Role < ActiveHash::Base
+class UserRole < ActiveHash::Base
   include ActiveHash::Enum
 
   self.data = [
-    {id: 0, name: "viewer"},
-    {id: 1, name: "admin"}
+    {id: 10, name: "user"},
+    {id: 20, name: "admin"}
   ]
 
   enum_accessor :name

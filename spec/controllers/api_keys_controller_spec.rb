@@ -17,12 +17,6 @@ describe ApiKeysController do
     context "when user is admin" do
       before { authenticate admin }
 
-      it "requires an expire_at param" do
-        response = get :new
-        expect(response.status).to eq 400
-        expect(assigns(:token)).to_not be_present
-      end
-
       it "requires expire_at greater then now" do
         response = get :new, expire_at: 1.day.ago.rfc2822
         expect(response.status).to eq 302

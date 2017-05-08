@@ -6,7 +6,7 @@ describe UserPolicy do
   let(:other_user) { create :user }
   let(:admin) { create :user, :admin }
 
-  permissions :create_tokens?, :show_clients? do
+  permissions :create_tokens? do
     it "grants access for all users" do
       expect(subject).to permit(user, ::User)
     end

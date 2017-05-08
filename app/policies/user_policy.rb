@@ -14,4 +14,6 @@ class UserPolicy < ApplicationPolicy
   def show_clients?
     user.present?
   end
+
+  alias create_client? :show_clients?
 end

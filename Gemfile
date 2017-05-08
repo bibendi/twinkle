@@ -7,6 +7,7 @@ gem "pg"
 gem "jsonb_accessor"
 gem "omniauth-github"
 gem "octokit"
+gem "faraday-http-cache"
 gem "sass-rails"
 # https://github.com/metaskills/less-rails/issues/122
 gem "less-rails", git: "https://github.com/MustafaZain/less-rails"
@@ -45,6 +46,5 @@ group :test do
 end
 
 group :development, :test do
-  gem "pry-rails"
   gem "pry-byebug"
 end

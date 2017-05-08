@@ -12,14 +12,17 @@ compose:
 interaction:
   sh:
     service: app
+    compose_run_options: [no-deps]
 
   irb:
     service: app
     command: irb
+    compose_run_options: [no-deps]
 
   bundle:
     service: app
     command: bundle
+    compose_run_options: [no-deps]
 
   rake:
     service: app

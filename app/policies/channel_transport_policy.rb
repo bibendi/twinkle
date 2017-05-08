@@ -1,8 +1,9 @@
 class ChannelTransportPolicy < ApplicationPolicy
-  def new?
-    user.try(:admin?)
+  def edit?
+    return false unless object.client
+    ClientPolicy.new(user, object.client).edit?
   end
 
-  alias create? new?
-  alias destroy? new?
+  alias update? edit?
+  alias destroy? edit?
 end

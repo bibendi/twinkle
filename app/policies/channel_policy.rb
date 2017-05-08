@@ -1,14 +1,15 @@
 class ChannelPolicy < ApplicationPolicy
   def show?
-    user.present?
+    return false unless object.client
+    ClientPolicy.new(user, object.client).show?
   end
 
-  def new?
-    user.try(:admin?)
+  def edit?
+    return false unless object.client
+    ClientPolicy.new(user, object.client).edit?
   end
 
-  alias create? new?
-  alias edit? new?
-  alias update? new?
-  alias destroy? new?
+  alias update? edit?
+  alias destroy? edit?
+  alias create_transport? edit?
 end

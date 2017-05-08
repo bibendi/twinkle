@@ -13,4 +13,4 @@
   = @user.email
 
 - if policy(::User).create_api_key?
-  = link_to t('helpers.links.new_api_token'), new_api_key_url(expire_at: 6.month.since.rfc2822), class: 'btn btn-primary'
+  = link_to t('helpers.links.new_api_token'), new_api_key_url, class: 'btn btn-primary'
