@@ -1,6 +1,8 @@
 # frozen_string_literal: true
-class UserOrgsFinder
-  include Findit::Collections
+class UserOrgsFinder < ApplicationFinder
+  collections memoize: true
+
+  cache_key { @user }
 
   def initialize(user)
     @user = user

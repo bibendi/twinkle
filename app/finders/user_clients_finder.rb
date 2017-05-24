@@ -1,6 +1,8 @@
-# frozen_string_literal: true
-class UserClientsFinder
-  include Findit::Collections
+ # frozen_string_literal: true
+class UserClientsFinder < ApplicationFinder
+  collections memoize: true
+
+  cache_key { [@user, @role] }
 
   delegate :github, to: :@user
 

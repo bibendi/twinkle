@@ -1,6 +1,8 @@
 # frozen_string_literal: true
-class UserTeamsFinder
-  include Findit::Collections
+class UserTeamsFinder < ApplicationFinder
+  collections memoize: true
+
+  cache_key { [@user, @org] }
 
   def initialize(user, org:)
     @user = user
