@@ -7,6 +7,7 @@ class ClientPolicy < ApplicationPolicy
 
   alias show_channels? show?
   alias show_transports? show?
+  alias show_members? show?
 
   def edit?
     return false unless user
@@ -15,7 +16,14 @@ class ClientPolicy < ApplicationPolicy
   end
 
   alias update? edit?
-  alias destroy? edit?
   alias create_channel? edit?
   alias create_transport? edit?
+
+  def destroy?
+    return false unless user
+    return false unless object.try(:persisted?)
+    UserClientsFinder.new(user, role: ClientRole::OWNER).to_a.include?(object)
+  end
+
+  alias create_member? destroy?
 end

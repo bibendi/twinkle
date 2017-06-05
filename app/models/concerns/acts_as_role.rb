@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 module ActsAsRole
-  def acts_as_role(class_name, as: :role)
+  def acts_as_role(class_name, as: :role, shortcuts: [:name])
     extend ActiveHash::Associations::ActiveRecordExtensions
 
     class_name = class_name.to_s.camelize
-    belongs_to_active_hash as, class_name: class_name
+    belongs_to_active_hash as, class_name: class_name, shortcuts: shortcuts
 
     validates as, presence: true
 

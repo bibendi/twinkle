@@ -30,3 +30,8 @@ crumb :telegram do |client, telegram|
   link "Telegram", client_transports_telegram_path(client, telegram)
   parent :telegrams, client
 end
+
+crumb :client_users do |client|
+  link "Users", client_users_path(client)
+  parent :client, client
+end

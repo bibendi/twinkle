@@ -8,4 +8,10 @@ class UserRole < ActiveHash::Base
   ]
 
   enum_accessor :name
+
+  data.each do |row|
+    define_method "#{row[:name]}?" do
+      public_send(:id) >= row[:id]
+    end
+  end
 end

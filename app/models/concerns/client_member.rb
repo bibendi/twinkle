@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module ClientOwner
+module ClientMember
   extend ActiveSupport::Concern
 
   included do
@@ -8,6 +8,8 @@ module ClientOwner
 
     belongs_to :client
 
+    scope :viewers, -> { where(["role_id >= ?", ClientRole::VIEWER.id]) }
     scope :members, -> { where(["role_id >= ?", ClientRole::MEMBER.id]) }
+    scope :owners, -> { where(["role_id >= ?", ClientRole::OWNER.id]) }
   end
 end

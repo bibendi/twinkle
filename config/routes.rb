@@ -16,6 +16,11 @@ Rails.application.routes.draw do
     namespace :transports do
       resources :telegrams
     end
+
+    scope module: :clients do
+      resources :users, param: :username
+      resources :teams, param: :name
+    end
   end
 
   # === API resources ===

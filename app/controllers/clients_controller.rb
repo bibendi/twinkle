@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class ClientsController < ApplicationController
   def index
     authorize current_user, :show_clients?
@@ -17,9 +18,10 @@ class ClientsController < ApplicationController
   def create
     authorize current_user, :create_client?
     @client = Client.new(client_params)
+    @client.client_users.build(user: current_user, role: ClientRole::OWNER)
 
     if @client.save
-      redirect_to clients_path, notice: "Client was successfully created."
+      redirect_to client_path(@client), notice: "Client was successfully created."
     else
       flash.now[:error] = "Error"
       render :new
@@ -36,7 +38,7 @@ class ClientsController < ApplicationController
     authorize @client
 
     if @client.update(client_params)
-      redirect_to clients_path, notice: "Client was successfully updated."
+      redirect_to client_path(@client), notice: "Client was successfully updated."
     else
       flash.now[:error] = "Error"
       render :edit

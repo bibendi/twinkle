@@ -16,6 +16,13 @@
   %br
   = @client.active
 
+- if policy(@client).show_members?
+  %p
+    %strong= link_to model_class.human_attribute_name(:users), client_users_url(@client)
+
+  %p
+    %strong= link_to model_class.human_attribute_name(:teams), client_teams_url(@client)
+
 - if policy(@client).show_channels?
   %p
     %strong= link_to model_class.human_attribute_name(:channels), client_channels_path(@client)
