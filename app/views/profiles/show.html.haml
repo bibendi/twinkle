@@ -1,0 +1,16 @@
+- breadcrumb :profile, current_user
+- model_class = User
+.page-header
+  %h1=t '.title', :default => model_class.model_name.human.titleize
+
+%p
+  %strong= model_class.human_attribute_name(:username) + ':'
+  %br
+  = @user.username
+%p
+  %strong= model_class.human_attribute_name(:email) + ':'
+  %br
+  = @user.email
+
+- if policy(::User).create_api_key?
+  = link_to t('helpers.links.new_api_token'), new_api_key_url, class: 'btn btn-primary'

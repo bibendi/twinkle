@@ -1,3 +1,7 @@
+crumb :profile do |user|
+  link user.username, profile_url
+end
+
 crumb :clients do
   link 'Clients', clients_url
 end
@@ -25,4 +29,14 @@ end
 crumb :telegram do |client, telegram|
   link "Telegram", client_transports_telegram_path(client, telegram)
   parent :telegrams, client
+end
+
+crumb :client_users do |client|
+  link "Users", client_users_path(client)
+  parent :client, client
+end
+
+crumb :client_teams do |client|
+  link "Teams", client_teams_path(client)
+  parent :client, client
 end

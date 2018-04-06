@@ -1,0 +1,21 @@
+:ruby
+  f = local_assigns.fetch(:f)
+
+.form-group
+  = f.label :username, class: 'control-label col-lg-2'
+  .col-lg-10
+    = f.text_field :username, class: 'form-control', required: true, disabled: f.object.persisted?
+  = f.error_span(:user_id)
+  = f.error_span(:user)
+
+.form-group
+  = f.label :role_name, class: 'control-label col-lg-2'
+  .col-lg-10
+    = f.collection_select :role_name, ClientRole.all, :name, :name, class: 'form-control', required: true
+  = f.error_span(:role_id)
+  = f.error_span(:role)
+
+.form-group
+  .col-lg-offset-2.col-lg-10
+    = f.submit nil, class: 'btn btn-primary'
+    = link_to t('.cancel', default: t("helpers.links.cancel")), client_users_path(@client), class: 'btn btn-default'

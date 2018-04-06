@@ -16,3 +16,4 @@
 !/.env.sample
 /vendor/bundle
 /coverage/
+/.irb-save-history

@@ -1,13 +1,12 @@
 require "spec_helper"
 
 describe Transports::TelegramsController do
-  let(:user) { create :user }
+  let(:user) { create :user, :admin }
   let(:client) { create :client }
   let(:telegram) { create :telegram_transport, client: client }
 
   before do
     authenticate user
-    authorize :admin
   end
 
   describe "#index" do

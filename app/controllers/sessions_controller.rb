@@ -1,25 +1,66 @@
 # frozen_string_literal: true
 class SessionsController < ApplicationController
-  skip_before_action :authenticate, only: [:create]
-  skip_before_action :authorize, only: [:destroy]
+  skip_before_action :authenticate_user, only: [:create]
 
   def create
-    authorize_context = GithubAuthorize.call(username: github_username, token: github_token)
+    skip_authorization
 
-    if authorize_context.success?
-      user = find_user || create_user
-      update_user_role(user, authorize_context.role)
-      create_session_for(user)
-      flash[:notice] = "You have been logged in."
-    else
-      flash[:error] = authorize_context.message
+    user = find_user || build_user
+
+    if config.github.organization
+      authorize_context = GithubAuthorize.call(
+        user: user,
+        organization: config.github.organization,
+        team: config.github.admin_team
+      )
+
+      unless authorize_context.success?
+        respond_to do |format|
+          format.html do
+            redirect_to root_path, error: authorize_context.message
+          end
+
+          format.json do
+            render json: {error: authorize_context.message}, status: 403
+          end
+        end
+
+        return
+      end
     end
 
-    redirect_to root_path
+    unless save_user(user)
+      respond_to do |format|
+        format.html do
+          redirect_to root_path, error: user.errors.full_messages.to_s
+        end
+
+        format.json do
+          render json: {error: user.errors.full_messages}, status: 422
+        end
+      end
+
+      return
+    end
+
+    tokens_context = ::CreateUserTokens.call!(user: user)
+
+    respond_to do |format|
+      format.html do
+        session[:token] = tokens_context.access_token.token
+        redirect_to root_path, notice: "You have been logged in."
+      end
+
+      format.json do
+        render json: {access_token: tokens_context.access_token.token,
+                      refresh_token: tokens_context.refresh_token.token}
+      end
+    end
   end
 
   def destroy
-    destroy_session
+    skip_authorization
+    session[:token] = nil
     flash[:notice] = "You have been logged out."
     redirect_to root_path
   end
@@ -30,41 +71,37 @@ class SessionsController < ApplicationController
     User.find_by(username: github_username)
   end
 
-  def create_user
-    User.create!(
+  def build_user
+    User.new(
       email: github_email_address,
-      username: github_username
+      username: github_username,
+      github_token: github_token,
+      role: User.exist? ? UserRole::USER : UserRole::ADMIN
     )
   end
 
-  def update_user_role(user, role)
-    return if user.role_id == role.id
-
-    user.role_id = role.id
-    user.save!
-  end
-
-  def create_session_for(user)
-    session[:remember_token] = user.remember_token
-  end
-
-  def destroy_session
-    session[:remember_token] = nil
+  def save_user(user)
+    user.github_token = github_token
+    user.save
   end
 
   def auth_hash
-    request.env['omniauth.auth']
+    @auth_hash ||= request.env['omniauth.auth']
   end
 
   def github_username
-    auth_hash.info.nickname
+    @github_username ||= auth_hash.info.nickname
   end
 
   def github_email_address
-    auth_hash.info.email
+    @github_email_address ||= auth_hash.info.email
   end
 
   def github_token
-    auth_hash.credentials.token
+    @github_token ||= auth_hash.credentials.token
+  end
+
+  def config
+    @config ||= Rails.application.config.twinkle
   end
 end

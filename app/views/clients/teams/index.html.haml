@@ -1,0 +1,27 @@
+- breadcrumb :client_teams, @client
+- model_class = ClientTeam
+.page-header
+  %h1=t '.title', default: "#{@client.name.titleize} #{Team.model_name.human.titleize}"
+%table.table.table-striped
+  %thead
+    %tr
+      %th= model_class.human_attribute_name(:id)
+      %th= model_class.human_attribute_name(:team)
+      %th= model_class.human_attribute_name(:role)
+      %th= model_class.human_attribute_name(:created_at)
+      %th=t '.actions', :default => t("helpers.actions")
+  %tbody
+    - @client_teams.each do |client_team|
+      %tr
+        %td= client_team.id
+        %td= client_team.team_name
+        %td= client_team.role.name
+        %td=l client_team.created_at
+        %td
+          - if policy(client_team).edit?
+            = link_to t('.edit', :default => t("helpers.links.edit")), edit_client_team_path(@client, client_team), :class => 'btn btn-default btn-xs'
+          - if policy(client_team).destroy?
+            = link_to t('.destroy', :default => t("helpers.links.destroy")), client_team_path(@client, client_team), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
+
+- if policy(@client).create_member?
+  = link_to t('.new', :default => t("helpers.links.new")), new_client_team_path(@client), :class => 'btn btn-primary'

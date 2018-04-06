@@ -12,6 +12,7 @@
   %br
   = @telegram.chat_id
 
-
-= link_to t('.edit', :default => t("helpers.links.edit")), edit_client_transports_telegram_path(@client, @telegram), :class => 'btn btn-default'
-= link_to t('.destroy', :default => t("helpers.links.destroy")), client_transports_telegram_path(@client, @telegram), :method => "delete", :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-danger'
+- if policy(@telegram).edit?
+  = link_to t('.edit', :default => t("helpers.links.edit")), edit_client_transports_telegram_path(@client, @telegram), :class => 'btn btn-default'
+- if policy(@telegram).destroy?
+  = link_to t('.destroy', :default => t("helpers.links.destroy")), client_transports_telegram_path(@client, @telegram), :method => "delete", :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-danger'

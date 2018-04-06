@@ -16,11 +16,22 @@
   %br
   = @client.active
 
-%p
-  %strong= link_to model_class.human_attribute_name(:channels), client_channels_path(@client)
+- if policy(@client).show_members?
+  %p
+    %strong= link_to model_class.human_attribute_name(:users), client_users_url(@client)
 
-%p
-  %strong= link_to model_class.human_attribute_name(:telegrams), client_transports_telegrams_path(@client)
+  %p
+    %strong= link_to model_class.human_attribute_name(:teams), client_teams_url(@client)
 
-= link_to t('.edit', :default => t("helpers.links.edit")), edit_client_path(@client), :class => 'btn btn-default'
-= link_to t('.destroy', :default => t("helpers.links.destroy")), client_path(@client), :method => "delete", :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-danger'
+- if policy(@client).show_channels?
+  %p
+    %strong= link_to model_class.human_attribute_name(:channels), client_channels_path(@client)
+
+- if policy(@client).show_transports?
+  %p
+    %strong= link_to model_class.human_attribute_name(:telegrams), client_transports_telegrams_path(@client)
+
+- if policy(@client).edit?
+  = link_to t('.edit', :default => t("helpers.links.edit")), edit_client_path(@client), :class => 'btn btn-default'
+- if policy(@client).destroy?
+  = link_to t('.destroy', :default => t("helpers.links.destroy")), client_path(@client), :method => "delete", :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-danger'

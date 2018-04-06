@@ -1,5 +1,8 @@
-class AvailableTransportsFinder
-  include Findit::Collections
+# frozen_string_literal: true
+class AvailableTransportsFinder < ApplicationFinder
+  collections memoize: true
+
+  cache_key { [@channel] }
 
   delegate :client, to: :@channel
 

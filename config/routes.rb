@@ -1,12 +1,12 @@
 Rails.application.routes.draw do
-  mount ResqueWeb::Engine => "/resque_web"
+  root "roots#show"
 
   get '/auth/github/callback', to: 'sessions#create'
   get '/sign_out', to: 'sessions#destroy'
 
-  root "roots#show"
-
+  resource :profile, only: :show
   resources :messages, only: :create
+  resources :api_keys, only: :new
 
   resources :clients do
     resources :channels do
@@ -16,5 +16,26 @@ Rails.application.routes.draw do
     namespace :transports do
       resources :telegrams
     end
+
+    scope module: :clients do
+      resources :users, param: :username
+      resources :teams, param: :name
+    end
   end
+
+  # === API resources ===
+  namespace :api, defaults: {format: :json} do
+    namespace :v1 do
+      concern :user_routes do
+        resources :tokens, only: :create
+      end
+
+      scope(:user) { concerns :user_routes }
+      resources :users, only: [], concerns: :user_routes
+
+      resources :clients
+    end
+  end
+
+  mount ResqueWeb::Engine => "/resque_web"
 end

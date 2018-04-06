@@ -23,7 +23,8 @@
           %ul.list-unstyled
             %li
               = link_to transport.name, client_transports_telegram_path(@client, transport)
-              = link_to t('.destroy', :default => t("helpers.links.destroy")), client_channel_channel_transport_path(@client, @channel, transport), :method => "delete", :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-danger btn-xs'
+              - if policy(transport).destroy?
+                = link_to t('.destroy', :default => t("helpers.links.destroy")), client_channel_channel_transport_path(@client, @channel, transport), :method => "delete", :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-danger btn-xs'
 
   = link_to t('.add', default: t('helpers.links.add')),
             new_client_channel_channel_transport_path(@client, @channel),
@@ -31,5 +32,7 @@
 
 %br
 
-= link_to t('.edit', :default => t("helpers.links.edit")), edit_client_channel_path(@client, @channel), :class => 'btn btn-default'
+- if policy(@channel).edit?
+  = link_to t('.edit', :default => t("helpers.links.edit")), edit_client_channel_path(@client, @channel), :class => 'btn btn-default'
+- if policy(@channel).destroy?
 = link_to t('.destroy', :default => t("helpers.links.destroy")), client_channel_path(@client, @channel), :method => "delete", :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-danger'

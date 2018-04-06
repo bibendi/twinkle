@@ -1,24 +1,15 @@
 # frozen_string_literal: true
 class User < ActiveRecord::Base
+  extend ActsAsRole
+  acts_as_role :user_role
+
+  has_many :client_users
+  has_many :clients, through: :client_users
+
   validates :email, presence: true
   validates :username, presence: true
-  validates :role_id, inclusion: {in: Role.all.map(&:id)}
 
-  before_create :generate_remember_token
-
-  def role
-    Role.find(role_id)
-  end
-
-  Role.all.each do |role|
-    define_method "#{role.name}?" do
-      role_id >= role.id
-    end
-  end
-
-  private
-
-  def generate_remember_token
-    self.remember_token = SecureRandom.hex(20)
+  def api
+    @api ||= UserApi.new(username: username, token: github_token)
   end
 end

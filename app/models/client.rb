@@ -1,8 +1,15 @@
+# frozen_string_literal: true
 class Client < ActiveRecord::Base
   has_many :channels
   has_many :transports
 
-  validates :name, presence: true, uniqueness: true
+  has_many :client_users
+  has_many :users, through: :client_users
+
+  has_many :client_teams
+  has_many :teams, through: :client_teams
+
+  validates :name, presence: true
   validates :token, presence: true, uniqueness: true
 
   before_validation :generate_token, on: :create
