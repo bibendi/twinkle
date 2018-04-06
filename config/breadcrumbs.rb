@@ -35,3 +35,8 @@ crumb :client_users do |client|
   link "Users", client_users_path(client)
   parent :client, client
 end
+
+crumb :client_teams do |client|
+  link "Teams", client_teams_path(client)
+  parent :client, client
+end
