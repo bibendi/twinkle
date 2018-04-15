@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  twinkle-app:
+    volumes:
+      - ..:/app
+      - /bundle:/bundle
+
+  twinkle-web:
+    volumes:
+      - ..:/app
+      - /bundle:/bundle
+
+  twinkle-resque:
+    volumes:
+      - ..:/app
+      - /bundle:/bundle

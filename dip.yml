@@ -1,54 +1,70 @@
-version: '1'
+version: '2'
 
 environment:
-  COMPOSE_FILE_EXT: development
+  RUBY_VERSION_MAJOR: 2
+  RUBY_VERSION_MINOR: 3
   RAILS_ENV: development
+  DIP_DATA: local
+  VIRTUAL_HOST: twinkle.docker
 
 compose:
   files:
-    - docker/docker-compose.${COMPOSE_FILE_EXT}.yml
-  project_name: twinkle${RAILS_ENV}
+    - docker/docker-compose.yml
+    - docker/docker-compose.${DIP_DATA}.yml
+    - docker/docker-compose.${RAILS_ENV}.yml
+  project_name: twinkle-${RAILS_ENV}
 
 interaction:
   sh:
-    service: app
-
-  irb:
-    service: app
-    command: irb
+    service: twinkle-app
+    compose_run_options: [no-deps]
 
   bundle:
-    service: app
+    service: twinkle-app
     command: bundle
+    compose_run_options: [no-deps]
+
+  irb:
+    service: twinkle-app
+    command: bundle exec irb
+    compose_run_options: [no-deps]
 
   rake:
-    service: app
+    service: twinkle-app
     command: bundle exec rake
 
   rails:
-    service: app
+    service: twinkle-app
+    command: bundle exec rails
     subcommands:
       s:
-        service: web
-
-      c:
-        command: bundle exec rails c
-
-      g:
-        command: bundle exec rails g
+        service: twinkle-web
+        compose_method: up
 
   rspec:
-    service: app
+    service: twinkle-app
     environment:
       RAILS_ENV: test
     command: bundle exec rspec
 
   psql:
-    service: pg
-    command: psql -h pg -U postgres twinkle
+    service: twinkle-app
+    command: psql -h twinkle-pg -U postgres twinkle
+
+  redis-cli:
+    service: twinkle-redis
+    command: redis-cli -h twinkle-redis
+    compose_run_options: [no-deps]
+
+  migrate:
+    service: twinkle-app
+    command: bundle exec rake db:migrate --trace
 
 provision:
   - docker volume create --name bundler_data
-  - dip compose up -d pg redis
+  - docker network inspect frontend > /dev/null 2>&1 || docker network create frontend
+  - docker network inspect backend > /dev/null 2>&1 || docker network create backend
+  - dip compose up -d twinkle-pg twinkle-redis
+  - until dip sh nc -z twinkle-pg 5432; do echo "Waiting for twinkle-pg..."; sleep 5; done
   - dip bundle install
-  - dip rake db:structure:load db:migrate --trace
+  - dip migrate

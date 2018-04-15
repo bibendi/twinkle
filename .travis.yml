@@ -2,7 +2,7 @@ language: ruby
 rvm:
   - 2.3.0
 addons:
-  postgresql: "9.4"
+  postgresql: "9.6"
   code_climate:
     repo_token: 92e95f195eb9ae99c668029ce248d1afa227d9c49da059977fcc608533b88be5
 before_script:
