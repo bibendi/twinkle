@@ -1,0 +1,92 @@
+version: '2'
+
+services:
+  twinkle-app:
+    image: abakpress/ruby-app:$RUBY_VERSION_MAJOR.$RUBY_VERSION_MINOR-latest
+    environment:
+      - BUNDLE_PATH=/bundle/$RUBY_VERSION_MAJOR.$RUBY_VERSION_MINOR
+      - RAILS_ENV=$RAILS_ENV
+    env_file:
+      - .env
+      - ../.env.${RAILS_ENV}
+    stdin_open: true
+    tty: true
+    command: bash
+    networks:
+      - default
+      - frontend
+      - backend
+    dns: $DIP_DNS
+    depends_on:
+      - twinkle-pg
+      - twinkle-redis
+
+  twinkle-web:
+    image: abakpress/ruby-app:$RUBY_VERSION_MAJOR.$RUBY_VERSION_MINOR-latest
+    environment:
+      - BUNDLE_PATH=/bundle/$RUBY_VERSION_MAJOR.$RUBY_VERSION_MINOR
+      - RAILS_ENV=$RAILS_ENV
+      - VIRTUAL_HOST=$VIRTUAL_HOST
+      - VIRTUAL_PATH=/
+    env_file:
+      - .env
+      - ../.env.${RAILS_ENV}
+    stdin_open: true
+    tty: true
+    command: 'bundle exec rails s Puma -b 0.0.0.0 -p 80 --pid /var/run/rails.pid'
+    expose:
+      - "80"
+    networks:
+      - default
+      - frontend
+      - backend
+    dns: $DIP_DNS
+    depends_on:
+      - twinkle-pg
+      - twinkle-redis
+
+  twinkle-resque:
+    image: abakpress/ruby-app:$RUBY_VERSION_MAJOR.$RUBY_VERSION_MINOR-latest
+    environment:
+      - BUNDLE_PATH=/bundle/$RUBY_VERSION_MAJOR.$RUBY_VERSION_MINOR
+      - RAILS_ENV=$RAILS_ENV
+      - 'QUEUE=*'
+    env_file:
+      - .env
+      - ../.env.${RAILS_ENV}
+    stdin_open: true
+    tty: true
+    command: 'bundle exec rake resque:work --trace'
+    networks:
+      - default
+      - backend
+    dns: $DIP_DNS
+    depends_on:
+      - twinkle-pg
+      - twinkle-redis
+
+  twinkle-pg:
+    image: postgres:9.6
+    environment:
+      - POSTGRES_DB=twinkle
+    networks:
+      - default
+      - backend
+    dns: $DIP_DNS
+
+  twinkle-redis:
+    image: redis:3-alpine
+    command: 'redis-server --appendonly yes --bind 0.0.0.0'
+    networks:
+      - default
+      - backend
+    dns: $DIP_DNS
+
+networks:
+  frontend:
+    external:
+      name: frontend
+
+  backend:
+    external:
+      name: backend

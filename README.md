@@ -35,18 +35,19 @@ In order to get the group chat id, do as follows:
 * Add the Telegram BOT to the group.
 * Get the list of updates for your BOT: `https://api.telegram.org/bot<YourBOTToken>/getUpdates`
 
-### Development
+### DIP
 
 #### Requirements
 
-* Docker >= 1.10 https://www.docker.com/
-* Docker Compose >= 1.8.0 https://github.com/docker/compose/releases
-* DIP >= 0.8.0 https://github.com/bibendi/dip
+* Docker >= 1.12 https://www.docker.com/
+* Docker Compose >= 1.9.0 https://github.com/docker/compose/releases
+* DIP >= 2.0.0 https://github.com/bibendi/dip
 
 #### Setup and Run
 
 ```sh
   dip dns up
+  dip nginx up
   dip provision
   dip rails s
   dip rails c
@@ -57,12 +58,6 @@ In order to get the group chat id, do as follows:
 ```
 
 Check http://twinkle.docker/
-
-### Production
-
-TODO
-
-http://rancher.com/
 
 ## Roadmap
 

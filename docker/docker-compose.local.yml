@@ -1,0 +1,39 @@
+version: '2'
+
+services:
+  twinkle-app:
+    volumes:
+      - ..:/app
+      - ../../gems:/localgems
+      - bundler-data:/bundle
+
+  twinkle-web:
+    volumes:
+      - ..:/app
+      - ../../gems:/localgems
+      - bundler-data:/bundle
+
+  twinkle-resque:
+    volumes:
+      - ..:/app
+      - ../../gems:/localgems
+      - bundler-data:/bundle
+
+  twinkle-pg:
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+  twinkle-redis:
+    volumes:
+      - redis-data:/data
+
+volumes:
+  bundler-data:
+    external:
+      name: bundler_data
+
+  pg-data:
+    driver: local
+
+  redis-data:
+    driver: local
