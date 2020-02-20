@@ -5,7 +5,7 @@ gem "puma"
 gem "pg"
 gem "jsonb_accessor"
 gem "omniauth-github"
-gem "octokit"
+gem "octokit", ">= 4.16.0"
 gem "sass-rails"
 # https://github.com/metaskills/less-rails/issues/122
 gem "less-rails", git: "https://github.com/MustafaZain/less-rails"
